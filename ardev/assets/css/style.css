@@ -1,0 +1,298 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
+}
+@media (orientation: landscape) {
+    /* .gridApp {
+        transform: rotate(90deg);
+        transform-origin: top left;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+    } */
+}
+.gridBgSea {
+    background-image: url('bgSea.png');
+}
+.rt90 {
+    transform: rotate(90deg);
+}
+.rtm90 {
+    transform: rotate(-90deg);
+}
+.imgPNG {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    background-color:#fff;
+    width: 100%;
+    height: 100%;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.none {
+    display: none;
+}
+
+.gridApp {
+    display: grid;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    grid-template-areas:
+        "main";
+}
+
+.gridLayer {
+    display: grid;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    grid-area: main;
+    transition: 0.5s;
+}
+
+.gridBg1 {
+    background-image: url("../../../lib/ui/3/ux.png");
+}
+.gridBg2 {
+    background-image: url("../../../lib/ui/4/ux.png");
+}
+.gridBgGlass {
+    background-image: url("../../../lib/ui/4/glass.png");
+}
+.gridBgBroke1 {
+    background-image: url("../../../lib/effect/glass/imga.png");
+}
+.gridBgBroke2 {
+    background-image: url("../../../lib/effect/glass/imgb.png");
+}
+.gridBgBroke3 {
+    background-image: url("../../../lib/effect/glass/imgc.png");
+}
+.gridBgNone {
+    background-image: none
+}
+.gridBgWhite {
+    background-color: rgba(255, 255, 255, 0.5);
+}
+.ui {
+    align-self: center;
+    justify-self: center;
+    width: 100%;
+    height: auto;
+}
+.uiSideBtn {
+    align-self: end;
+}
+.ui.sideBtn1 {
+    grid-column: 3 / 4;
+    margin-bottom: 1rem;
+}
+.ui.sideBtn2 {
+    grid-column: 4 / 5;
+    /* margin-bottom: 2rem; */
+}
+.ui.sideBtn3 {
+    grid-column: 5 / 6;
+    margin-bottom: 1rem;
+}
+.ui.sideBtn4 {
+    grid-column: 7 / 8;
+    align-self: center;
+}
+.sideBar {
+    position: absolute;
+    top: 1.5rem;
+    left: 12.5%;
+    width: 75%;
+}
+.headText {
+    grid-column: 2 / 5;
+    text-align: center;
+    align-self: start !important;
+    font-size: 1.2rem;
+    padding: 0.3rem 0.2rem;
+    margin-top: 2rem;
+    border: 1px solid;
+    border-image: linear-gradient( to right, #64B5BF 0%, #D646F9 100%);
+    border-image-slice: 1;
+    color: #222;
+    background-color: rgba(255, 255, 255, 0.3);
+}
+.loading {
+    color: #ccc;
+    margin-top: 1rem;
+    font-size: 1.2rem;
+}
+
+.layui {
+    grid-template-columns: repeat( 6, 1fr );
+    grid-template-rows: repeat( 20, 1fr);
+    opacity: 0;
+}
+
+.layui .zoom {
+    grid-column: 1 / 7;
+    grid-row: 4 / 20;
+    justify-self: center;
+    align-self: center !important;
+    padding: 4%;
+    width: 100%;
+}
+
+.layui .sideLUi {
+    grid-row : 1 / 4;
+    grid-column: 1 / 7;
+    display: grid;
+    grid-gap: 1rem;
+    grid-template-rows: 1fr;
+    grid-template-columns: 3fr 1fr 3fr 3fr 3fr 1fr 3fr;
+}
+
+.layLoad {
+    position: absolute;
+    grid-template-rows: 1fr;
+    grid-template-columns: 1fr;
+    z-index: 1001;
+    padding: 2rem 1rem;
+    left: 0;
+    top: 0;
+}
+
+.layLoad .loadContainer {
+    grid-column: 1 / 2;
+    grid-row: 1 / 2;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+    background-color: rgba(0, 0, 0, 0.8);
+    border-radius: 2rem;
+}
+
+.layLoad .loadContainer .loadText {
+    align-self: end;
+    justify-self: center;
+    text-align: center;
+    padding-bottom: 2rem;
+    font-weight: 400;
+    color: white;
+}
+
+.layLoad .loadContainer .loadBtn {
+    align-self: top;
+    justify-self: center;
+    height: 4rem;
+    min-width: 10rem;
+    background: none;
+    border-radius: 2rem;
+    border: 2px solid white;
+    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+    outline: none;
+    display: none;
+}
+.layLoad .loadContainer .loadingBar {
+    align-self: top;
+    justify-self: center;
+    height: 4rem;
+    min-width: 10rem;
+    background: none;
+    border-radius: 2rem;
+    border: 2px solid white;
+    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+    outline: none;
+}
+.layText {
+    display: grid;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    position: absolute;
+    left: 0;
+    top: 0;
+    grid-template-rows: 1fr;
+    grid-template-columns: 1fr;
+    padding: 2rem 1rem;
+}
+.onHeadText {
+    align-self: center;
+    justify-self: end;
+    height: 3rem;
+    min-width: 10rem;
+    background: none;
+    border: 2px solid white;
+    color: white;   
+    font-size: 1.5rem;
+    font-weight: bold;
+    outline: none;
+}
+
+.shadow-on {
+  border: 5px solid #21a300;
+}
+
+li { list-style: none;}
+button { border:0; background: none;}
+
+ #wrap{
+   width:100%; height:100%; position:relative;
+   box-sizing: border-box;
+   padding: 20px;
+   z-index: 1000;
+ }
+ .back {width:50px; height:50px; border-radius: 50px; background: url(../images/back.png) no-repeat center center / cover; transform: rotate(90deg);
+ position: absolute; top:20px; right:20px;}
+ .cam_wrap {position: absolute; left:20px ;top:20px;width:80px; height:80px; border-radius: 80px; background-color: #000;}
+ .cam_shutter {width:70px; height: 70px; border-radius:70px; background-color: #fff;
+ position: absolute; top:calc(50% - 35px); left:calc(50% - 35px);}
+ /* 메뉴가 숨겨진 모습 */
+ div.thema { width:50px; height:50px; position: absolute; right:30%; top:8%;transform: rotate(90deg);}
+ .thema_list_hide {width:50px; height:50px; position: absolute; left:0; top:0;}
+ .thema_list_hide li {width:50px; height:50px; border-radius: 50px; position: absolute; left:0; top:0; background-color: #fff;}
+ .thema_main  {background:url(../images/thema.png) no-repeat center center / cover;z-index: 2; }
+ .animal { background: url(../images/animal.png) no-repeat center center / cover;}
+ .flower { background: url(../images/flower.png) no-repeat center center / cover;}
+ .butterfly{background: url(../images/butterfly.png) no-repeat center center / cover;}
+ .dinosaur {background: url(../images/dinosaur.png) no-repeat center center / 75%;}
+ .fish {background: url(../images/fish.png) no-repeat center center / 80%;}
+ .themaX {background: url(../images/menu_close.png) no-repeat center center /120%;}
+div.bg { width:50px; height:50px;  position: absolute; right:50%; top:8%;transform: rotate(90deg);}
+.bg_list_hide {width:50px; height:50px;  position: absolute; left:0; top:0;}
+.bg_list_hide li {width:50px; height:50px; border-radius: 50px; position: absolute; left:0; top:0; background-color: #fff; }
+.bg_main {background: url(../images/bg_main.png) no-repeat center center / cover;z-index: 2;}
+.grassland {background: url(../images/grassland.png) no-repeat center center / cover; }
+.jungle {background: url(../images/jungle.png) no-repeat center center / cover;}
+.sea {background: url(../images/sea.png) no-repeat center center / cover;}
+.cherryB {background: url(../images/cherryB.png) no-repeat center center / cover;}
+.bgX {background: url(../images/menu_close.png) no-repeat center center / 120%;}
+/* 메뉴가 나타난 모습 */
+.thema_list_show {width:480px; height:50px; position: absolute; left:0; top:0; }
+.thema_list_show li {width:50px; height:50px; border-radius: 50px; display: inline-block; margin-left: 10px; background-color: #fff;}
+.bg_list_show {width:480px; height:50px;  position: absolute; left:0; top:0; }
+.bg_list_show li {width:50px; height:50px; border-radius: 50px; display: inline-block; margin-left: 10px; background-color: #fff; }
+
+
+.bubble1 { display: none; position: absolute; top:0; left:0; background: url(../../../lib/effect/bubble/bubble2.png) no-repeat center center / cover;}
+.bubble2 { display: none; position: absolute; top:0; left:0; background: url(../../../lib/effect/bubble/bubble3.png) no-repeat center center / cover;}
+.bubble3 { display: none; position: absolute; top:0; left:0; background: url(../../../lib/effect/bubble/bubble4.png) no-repeat center center / cover;}
+.bubble4 { display: none; position: absolute; top:0; left:0; background: url(../../../lib/effect/bubble/bubble5.png) no-repeat center center / cover;}

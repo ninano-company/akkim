@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zxx">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link rel="icon" href="images/favicon.png">
+	<title>Maxui</title>
+
+	<link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700,900&display=swap" rel="stylesheet">
+
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/ionicons.min.css">
+	<link rel="stylesheet" href="css/fakeLoader.css">
+	<link rel="stylesheet" href="css/swiper.min.css">
+	<link rel="stylesheet" href="css/style.css">
+
+</head>
+<body>
+	
+	<!-- fakeloader -->
+	<div class="fakeLoader"></div>
+	<!-- end fakeloader -->
+	
+	<!-- pages wrapper -->
+	<div class="pages-wrapper">
+
+		<div class="map" id="map">
+			<!--
+			<iframe class="map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d387193.3060965204!2d-74.25987695601818!3d40.69714939158755!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c24fa5d33f083b%3A0xc80b8f06e177fe62!2sKota+New+York%2C+New+York%2C+Amerika+Serikat!5e0!3m2!1sid!2sid!4v1520664948501"></iframe>
+			-->
+		</div>
+
+		<script>
+			var map, infoWindow;
+			function initMap() {
+				map = new google.maps.Map(document.getElementById('map'), {
+					center: {lat: 36.127, lng: 128.182},
+					zoom: 16
+				});
+				infoWindow = new google.maps.InfoWindow;
+
+				//Try HTML5 geolocation
+				if (navigator.geolocation) {
+					navigator.geolocation.getCurrentPosition(function(position) {
+						var pos = {
+							lat: position.coords.latitude,
+							lng: position.coords.longitude
+						};
+
+						infoWindow.setPosition(pos);
+						infoWindow.setContent('현재 위치');
+						infoWindow.open(map);
+						map.setCenter(pos);
+					}, function() {
+						handleLocationError(true, infoWindow, map.getCenter());
+					});
+				} else {
+					// Browser doesn't support Geolocation
+					handleLocationError(false, infoWindow, map.getCenter());
+				}
+			}
+
+			function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+				infoWindow.setPosition(pos);
+				infoWindow.setContent(browserHasGeolocation ?
+						'Error: The Geolocation service failed.' :
+						'Error: Your browser doesn\'t support geolocation.');
+				infoWindow.open(map);
+			}
+		</script>
+		<script defer
+			src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDUm4IgFj0lKUxKQUCQsadTAdDVA80Mdkk&callback=initMap">
+		</script>
+
+	</div>
+	<!-- end pages wrapper -->
+
+	<script src="js/jquery-3.4.1.min.js"></script>
+	<script src="js/bootstrap.bundle.min.js"></script>
+	<script src="js/fakeLoader.js"></script>
+	<script src="js/swiper.min.js"></script>
+	<script src="js/main.js"></script>
+
+</body>
+</html>

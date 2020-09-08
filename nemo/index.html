@@ -1,0 +1,121 @@
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <!-- <meta name="mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+    <title>증강현실 안내판</title>
+    <!-- include A-Frame obviously -->
+    <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+    <!-- include ar.js for A-Frame -->
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+    <script src="https://rawgit.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap" rel="stylesheet">
+    <!-- <script src="../lib/js/html2canvas.min.js"></script> -->
+    <link rel="stylesheet" href="style.css?ver=15">
+</head>
+<body style='margin : 0px; overflow: hidden;'>
+    <div class="gridApp">
+
+        <div class="gridLayer lay1 gridbg1">
+            <p class="mainText">Web<span class="bold">AR</span></p>
+            <div class="loading">
+                <img src="../lib/ui/3/loadings.gif"></img>
+            </div>
+        </div>
+
+        <div class="gridLayer lay2 gridbg2">
+            <img class="ui uibtn1" src="../lib/ui/4/4-1button.png"></img>
+            <img class="ui uibtn2" src="../lib/ui/4/4-2button.png"></img>
+            <img class="ui uibtn3" src="../lib/ui/4/4-3button.png"></img>
+            <img class="ui uibtn4" src="../lib/ui/4/4-4button.png"></img>
+        </div>
+
+        <div class="gridLayer lay3 gridbg2">
+            <img class="ui uibtn1" src="../lib/ui/5/5-1button.png"></img>
+            <img class="ui uibtn2" src="../lib/ui/5/5-2button.png"></img>
+            <img class="ui uibtn3" src="../lib/ui/5/5-3button.png"></img>
+            <div class="sideRUi">
+                <img class="ui sideBtn1" src="../lib/ui/7/7-1button.png"></img>
+            </div>
+        </div>
+
+        <div class="gridLayer lay4 gridBgNone">
+            <p class="ui headText">중앙에 마커가 보이도록 카메라를 비춰 주세요</p>
+            <div class="sideRUi">
+                <img class="ui sideBtn1" src="../lib/ui/7/7-1button.png"></img>
+                <img class="ui sideBtn2 none" src="../lib/ui/7/7-2button.png"></img>
+                <img class="ui sideBtn3" src="../lib/ui/7/7-3button.png"></img>
+            </div>
+        </div>
+        
+        <div class="gridLayer lay5 gridBgNone">
+            <p class="ui headText">중앙에 마커가 보이도록 카메라를 비춰 주세요</p>
+            <div class="sideRUi">
+                <img class="ui sideBtn1" src="../lib/ui/7/7-1button.png"></img>
+                <img class="ui sideBtn2 none" src="../lib/ui/12/12-1button.png"></img>
+            </div>
+        </div>
+        
+        <div class="gridLayer lay6 gridBgGlass">
+            <div class="sideRUi">
+                <img class="ui sideBtn2" src="../lib/ui/12/12-1button.png" alt="capture">
+            </div>
+        </div>
+        
+        <div class="gridLayer lay7 gridBgNone">
+            <img class="ui uibtn1" src="../lib/ui/13/13-1button.png"></img>
+            <img class="ui uibtn2" src="../lib/ui/13/13-2button.png"></img>
+            <img class="ui uibtn3" src="../lib/ui/13/13-3button.png"></img>
+            <div class="sideRUi">
+            </div>
+        </div>
+
+
+        
+        <img src="../lib/effect/glass/imga.png" class="imgPNG imga hidden" alt="imga">
+        <img src="../lib/effect/glass/imgb.png" class="imgPNG imgb hidden" alt="imgb">
+        <img src="../lib/effect/glass/imgc.png" class="imgPNG imgc hidden" alt="imgc">
+    
+    </div>
+    
+    <a-scene vr-mode-ui="enabled: false;" embedded arjs='sourceType: webcam; sourceWidth:1280; sourceHeight:960; displayWidth: 1280; displayHeight: 960; debugUIEnabled: false;'>
+        <a-assets>
+            <a-asset-item id="nemo1" response-type="arraybuffer" src="../lib/models/n1.glb"></a-asset-item>
+            <a-asset-item id="nemo2" response-type="arraybuffer" src="../lib/models/n2.glb"></a-asset-item>
+            <a-asset-item id="nemo3" response-type="arraybuffer" src="../lib/models/n3.glb"></a-asset-item>
+            <a-asset-item id="seagrass1" response-type="arraybuffer" src="../lib/models/seagrass1.glb"></a-asset-item>
+            <a-asset-item id="seagrass2" response-type="arraybuffer" src="../lib/models/seagrass2.glb"></a-asset-item>
+            <a-asset-item id="seagrass3" response-type="arraybuffer" src="../lib/models/seagrass3.glb"></a-asset-item>
+            <a-asset-item id="seagrass4" response-type="arraybuffer" src="../lib/models/seagrass4.glb"></a-asset-item>
+        </a-assets>
+        
+        <!-- define a camera which will move according to the marker position -->
+        <a-marker id="target1" preset="hiro" smooth='true' smoothCount='10' smoothTolerance='0.02' smoothThreshold="4">
+            <a-entity id="targetNemo1" gltf-model="#nemo1" position="0 0 0" scale="0.00035 0.00035 0.00035" rotation="-90 0 0" animation-mixer></a-entity>
+            <a-entity id="targetNemo2" gltf-model="#nemo2" position="0 0 0" scale="0.00035 0.00035 0.00035" rotation="-90 0 0" animation-mixer></a-entity>
+            <a-entity id="targetNemo3" gltf-model="#nemo3" position="0 0 0" scale="0.00035 0.00035 0.00035" rotation="-90 0 0" animation-mixer></a-entity>
+            </a-box>
+        </a-marker>
+        <a-marker id="target2" preset="kanji" smooth='true' smoothCount='20' smoothTolerance='0.01' smoothThreshold="2">
+            <a-entity id="targetSeagrass1" gltf-model="#seagrass1" position="2 0 2" scale="0.0017 0.0017 0.0017" rotation="-90 0 0" animation-mixer></a-entity>
+            <a-entity id="targetSeagrass2" gltf-model="#seagrass2" position="2 -1 2" scale="0.0017 0.0017 0.0017" rotation="-90 0 0" animation-mixer></a-entity>
+            <a-entity id="targetSeagrass3" gltf-model="#seagrass3" position="2 1 2" scale="0.0017 0.0017 0.0017" rotation="-90 0 0" animation-mixer></a-entity>
+            <a-entity id="targetSeagrass4" gltf-model="#seagrass4" position="-2 0 2" scale="0.0017 0.0017 0.0017" rotation="-90 0 0" animation-mixer></a-entity>
+            <a-image id="text1" src="../lib/img/signboard.png" rotation="-90 0 0" position="1 0 1" scale="6 6 6"></a-image>
+            <a-text id="text2" value="Ganjeolgot Hope Road" rotation="-90 0 0" position="-0.8 0.2 -1" scale="1.1 1.1 1.1" letter-spacing="0.2" font="https://cdn.aframe.io/fonts/KelsonSans.fnt"></a-text>
+            <a-text id="text3" value="It'll be done, if you hope" rotation="-90 0 0" position="-1.5 0.2 -0.6" scale="0.8 0.8 0.8" color="#d6995a" font="https://cdn.aframe.io/fonts/mozillavr.fnt"></a-text>
+            <a-text id="text4" value="한글한글The coastal road was created with two meanings: the name of Ganjeolgot, which opens the New Year on the Korean Peninsula, and the wish to wish for a year through sunrise.
+            Ganjeolgot Somanggil starts from Jinha Myeongseon Bridge and is 10km along the southern coast to Sinam Port, and wishes for each wish, such as dream and love, to have a time of communication and healing with family and friends in beautiful nature!
+            " rotation="-90 0 0" position="-1.5 0.2 0.1" width="2.2" font="../lib/font/NanumGothic.fnt" line-height="30"></a-text>
+        </a-marker>
+        <a-entity camera></a-entity>
+    </a-scene>
+    
+    <audio id="glassClank" src="../lib/sounds/glassClank.wav"></audio>
+    <audio id="deepWaterBubble" src="../lib/sounds/deepWaterBubble.wav"></audio>
+
+    <script src="function.js?ver=0"></script>
+    <script src="script.js?ver=11"></script>
+</body>
+</html>
+

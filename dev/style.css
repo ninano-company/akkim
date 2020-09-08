@@ -1,0 +1,244 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
+}
+@media (orientation: portrait) {
+    html {
+        transform: rotate(90deg);
+        transform-origin: top left;
+        position: absolute;
+        top: 0%;
+        left: 100%;
+        width: 100vh;
+        height: 100vw;
+    }
+}
+
+body {
+    background-color:#fff;
+    width: 100%;
+    height: 100%;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.none {
+    display: none;
+}
+
+.gridApp {
+    display: grid;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    grid-template-areas:
+        " main";
+}
+
+.gridLayer {
+    display: grid;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    opacity: 0;
+    grid-area: main;
+    transition: 0.5s;
+}
+
+.gridBg1 {
+    background-image: url("../lib/ui/3/ux.png");
+}
+.gridBg2 {
+    background-image: url("../lib/ui/4/ux.png");
+}
+.gridBgGlass {
+    background-image: url("../lib/ui/4/glass.png");
+}
+.gridBgBroke1 {
+    background-image: url("../lib/effect/glass/imga.png");
+}
+.gridBgBroke2 {
+    background-image: url("../lib/effect/glass/imgb.png");
+}
+.gridBgBroke3 {
+    background-image: url("../lib/effect/glass/imgc.png");
+}
+.gridBgNone {
+    background-image: none
+}
+
+.ui.sideBtn1 {
+    grid-row: 2 / 3;
+    width: 55%;
+}
+.ui.sideBtn2 {
+    grid-row: 3 / 4;
+    width: 55%;
+}
+.ui.sideBtn3 {
+    grid-row: 4 / 5;
+    width: 55%;
+}
+.headText {
+    grid-column: 2 / 5;
+    text-align: center;
+    align-self: start !important;
+    font-size: 1.2rem;
+    padding: 0.3rem 0.2rem;
+    margin-top: 2rem;
+    border: 1px solid;
+    border-image: linear-gradient( to right, #64B5BF 0%, #D646F9 100%);
+    border-image-slice: 1;
+    color: #fff;
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+.lay1 {
+    z-index: 2;
+    opacity: 1;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+}
+.lay1 .mainText {
+    grid-row: 1 / 2;
+    grid-column: 2 / 3;
+    font-size: 3rem;
+    color: #fff;
+    align-self: end;
+    justify-self: center;
+    padding: 0 1.5rem;
+    line-height: 3.4rem;
+    border: 1.5px solid #fff;
+    border-radius: 1.7rem;
+}
+.lay1 .loading {
+    grid-row: 2 / 3;
+    grid-column: 2 / 3;
+    align-self: top;
+    justify-self: center;
+    padding-top : 1rem;
+}
+.lay1 .loading img {
+    width: 4rem;
+}
+
+.lay2 {
+    grid-template-columns: repeat( 6, 1fr );
+    grid-template-rows: 2fr 5fr 1fr 5fr 2fr;
+}
+.ui {
+    align-self: center;
+    justify-self: center;
+    width: 100%;
+    height: auto;
+}
+.lay2 .ui.uibtn1 {
+    grid-row: 2 / 3;
+    grid-column: 2 / 3;
+}
+.lay2 .ui.uibtn2 {
+    grid-row: 4 / 5;
+    grid-column: 3 / 4;
+}
+.lay2 .ui.uibtn3 {
+    grid-row: 2 / 3;
+    grid-column: 4 / 5;
+}
+.lay2 .ui.uibtn4 {
+    grid-row: 4 / 5;
+    grid-column: 5 / 6;
+}
+
+
+
+.lay3 {
+    grid-template-columns: repeat( 5, 1fr );
+    grid-template-rows: 1fr;
+    grid-gap: 2rem;
+}
+.lay3 .ui.uibtn1 {
+    grid-column: 2 / 3;
+}
+.lay3 .ui.uibtn2 {
+    grid-column: 3 / 4;
+}
+.lay3 .ui.uibtn3 {
+    grid-column: 4 / 5;
+}
+.lay3 .sideRUi {
+    grid-column : 5 / 6;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 2fr 2fr 2fr 1fr;
+}
+
+
+
+.lay4 {
+    grid-template-columns: repeat( 5, 1fr );
+    grid-template-rows: 1fr;
+    grid-gap: 2rem;
+}
+.lay4 .sideRUi {
+    grid-column : 5 / 6;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 2fr 2fr 2fr 1fr;
+}
+
+
+
+.lay5 {
+    grid-template-columns: repeat( 5, 1fr );
+    grid-template-rows: 1fr;
+}
+.lay5 .sideRUi {
+    grid-column : 5 / 6;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 3fr 3fr 1fr;
+}
+
+
+
+.lay6 {
+    grid-template-columns: repeat( 5, 1fr );
+    grid-template-rows: 1fr;
+    grid-gap: 2rem;
+}
+.lay6 .sideRUi {
+    grid-column : 5 / 6;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 2fr 2fr 3fr 1fr;
+}
+
+
+
+.lay7 {
+    grid-template-columns: repeat( 5, 1fr );
+    grid-template-rows: 1fr;
+    grid-gap: 2rem;
+}
+.lay7 .ui.uibtn1 {
+    grid-column: 2 / 3;
+}
+.lay7 .ui.uibtn2 {
+    grid-column: 3 / 4;
+}
+.lay7 .ui.uibtn3 {
+    grid-column: 4 / 5;
+}
+.lay7 .sideRUi {
+    grid-column : 5 / 6;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 2fr 2fr 2fr 1fr;
+}
