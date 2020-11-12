@@ -1,0 +1,25 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="html2canvas.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <p>Hello World</p>
+    <img src="../images/fish.png" alt="">
+    <button>Hello World</button>
+    <script>
+        document.querySelector('button').addEventListener('click', function() {
+            html2canvas(document.body).then(function(canvas) {
+                var myImage = canvas.toDataURL("image/png");
+                var img = document.createElement('img');
+                img.src = myImage;
+                var a = document.createElement('a');
+                a.href = img.src;
+                a.download = 'image.gif';
+                a.click();
+            });
+        });
+    </script>
+</body>
+</html>

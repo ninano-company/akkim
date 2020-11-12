@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>Translation</title>
+    <link rel="stylesheet" href="Translaition-List.css?ver=1">
+
+</head>
+
+<body>
+    <header>
+        <a href="../index.html" class="goHome"></a>
+        <a href="#" class="goBack"></a>
+        <h1>Translation - List</h1>
+    </header>
+    <main>
+        <p class="update">번역이 실행되지 않는다면 번역 서비스를 업데이트해야합니다. <a href="https://play.google.com/store/apps/details?id=com.google.ar.core" style="color:blue; text-decoration: underline;">여기</a>를 클릭하셔서 업데이트를 해주세요.</p>
+        <section>
+            <h2><span class="h2_kor">사용하실 언어를 선택해주세요.</span><br>
+                <span class="h2_eng">Please select the language to use.</span><br>
+                <span class="h2_chn">选择您要使用的语言。</span>
+            </h2>
+            <div class="select_lang">
+                <!-- 버튼 링크 -->
+                <p class="lang_back korBack"><a href="intent://arvr.google.com/scene-viewer/1.0?file=https://ninanobiz.com/akkim/ardev/assets/models/signboards/SignboardKR.glb&mode=ar_only&title=대왕암 안내판#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;" class="lang_title">한국어 - Korean - 韩语</a></p>
+                <p class="lang_back engBack"><a href="#none" class="lang_title">영어 - English - 英语</a></p>
+                <p class="lang_back chnBack"><a href="intent://arvr.google.com/scene-viewer/1.0?file=https://ninanobiz.com/akkim/ardev/assets/models/signboards/SignboardCH.glb&mode=ar_only&title=중문 대왕암 번역안내판#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;" class="lang_title">중국어 - Chinese - 中文</a></p>
+            </div>
+        </section>
+    </main>
+    
+    <script>
+        function NoRight(){
+            return false;
+        }
+        document.oncontextmenu = NoRight;
+        let backpage = document.getElementsByClassName('goBack')[0];
+        backpage.addEventListener('click',function(){
+            window.history.back();
+        })
+    </script>
+</body>
+
+</html>

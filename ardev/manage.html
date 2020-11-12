@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AR관리자 페이지</title>
+    <script src="assets/js/jquery-3.5.1.min.js"></script>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        header {
+            width: 100%;
+            height:100px;
+            margin: 0 auto;
+            box-sizing: border-box;
+            padding:1rem;
+            text-indent:30px;
+            background-color: #fff;
+        }
+        header h1 { line-height: 70px;}
+        body { background-color: #ccc;
+        box-sizing: border-box; padding-bottom: 50px; }
+        #mainPage {
+            width: 90%;
+            margin: 30px auto 0;
+            position: relative;
+            background-color: #fff;
+            border:2px solid #000;
+            border-radius: 20px;
+            box-sizing: border-box;
+            padding: 2rem;
+            padding-bottom: 100px;
+        }
+
+        #mainPage h2 {
+            margin-bottom: 30px;
+        }
+
+        .orderBtnBox {
+            width:200px;
+            position: absolute;
+            bottom:20px; 
+            left: calc(50% - 100px);
+        }
+
+        .orderBtn {
+            margin: 0 10px;
+            min-width: 60px;
+            min-height: 30px;
+            box-sizing: border-box;
+            padding: 6px 10px;
+            border-radius: 5px;
+        }
+
+        .EditBox {
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+
+        .EditBox>div {
+            display: grid;
+            grid-template-columns: 200px calc(100% - 200px);
+            gap: 20px;
+        }
+
+        .EditBox>div>span {
+            text-align: center;
+            border-right: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        .fonts {
+            display: none;
+        }
+
+        input,
+        select {
+            padding: 2px;
+            text-indent: 3px;
+            margin: 5px 10px;
+        }
+
+        input[type=color] {
+            height: 20px;
+            width: 20px;
+            margin:0;
+        }
+
+        input[type=number]:not(.words) {
+            width: 50px;
+        }
+
+        .words {
+            padding: 3px;
+            font-size: 1rem;
+            width: 200px;
+        }
+        .editctrl {width:90%; display: grid; grid-template-columns: repeat(3,1fr); gap:10px 20px; }
+        
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>AR관리자 페이지</h1>
+    </header>
+    <main>
+        <div id="mainPage">
+            <form action="putdata.php" method="POST">
+                <input type="hidden" value="index" name="index">
+                <h2>메인페이지 관리</h2>
+                <div class="EditBox">
+                    <div class="elogo">
+                        <span class="subject">로고</span>
+                        <input type="hidden" value="logo" name="logo">
+                        <div class="editctrl">
+                            <span><input type="radio" name="choice" checked class="logoIMG"> 이미지 <input type="radio"
+                                name="choice" class="logoWords"> 문구</span>
+                            <div class="img">
+                                <input type="file" class="file" name="logofile">
+                                <span>가로:<input type="number" name="logowidth" min="0">px &nbsp;&nbsp;
+                                세로:<input type="number" name="logoheight" min="0">px</span>
+                            </div>
+                            <div class="fonts">
+                                <span>내용 :<input type="text" class="words" name="logoName"></span>
+                                <span>폰트<select name="logofont">
+                                        <option value="0" selected>폰트를 선택해주세요</option>
+                                        <option value="1">나눔고딕</option>
+                                        <option value="2">Baloo Thambi</option>
+                                        <option value="3">FredokaOne</option>
+                                        <option value="4">Tmoney</option>
+                                    </select></span>
+                                <span>폰트 사이즈 <input type="number" name="logofontsize"> px</span>
+                                <span>폰트 컬러: <input type="color"><input type="text" class="colorNum"
+                                        name="logofontcolor"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ebanslide">
+                        <!-- <input type="hidden" name="slide" value="slide"> -->
+                        <span class="subject">배너 슬라이드</span>
+                        <div class="editctrl">
+                            <span>슬라이드 갯수 : <input type="number" class="slideNum" max="5"></span>
+                            <!-- <p>슬라이드1 <input type="file" name=""> 이미지 크기 <input type="number">%</p> -->
+                        </div>
+                    </div>
+                    <div class="ewinb">
+                        <input type="hidden" name="bannerparagh" value="bannerparagh">
+                        <span class="subject">배너 문구</span>
+                        <div class="editctrl">
+                            <span><input type="radio" name="usewords" checked class="use">사용 <input type="radio"
+                                    name="usewords" class="notuse"> 사용하지 않음</span>
+                            <div class="usewinb">
+                                <span>내용 :<input type="text" class="words" name="winbparagh"></span>
+                                <span>폰트 <select name="winbfonts">
+                                        <option value="0" selected>폰트를 선택해주세요</option>
+                                        <option value="1">나눔고딕</option>
+                                        <option value="2">Baloo Thambi</option>
+                                        <option value="3">FredokaOne</option>
+                                        <option value="4">Tmoney</option>
+                                    </select></span>
+                                <span>폰트 사이즈 : <input type="number" name="winbfontsize"> px</span>
+                                <span>폰트 컬러: <input type="color"><input type="text" class="colorNum"
+                                        name="winbfontcolor"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ebinb">
+                        <input type="hidden" value="bannerbutton" name="bannerbutton">
+                        <span class="subject">배너 버튼</span>
+                        <div class="editctrl">
+                            <span><input type="radio" name="usebutton" checked class="use">사용 <input type="radio"
+                                    name="usebutton" class="notuse"> 사용하지 않음</span>
+                            <div class="usebinb">
+                                <span>내용 :<input type="text" class="words" name="binbparagh"></span>
+                                <span>폰트 :<select name="binbfonts">
+                                        <option value="0" selected>폰트를 선택해주세요</option>
+                                        <option value="1">나눔고딕</option>
+                                        <option value="2">Baloo Thambi</option>
+                                        <option value="3">FredokaOne</option>
+                                        <option value="4">Tmoney</option>
+                                    </select></span>
+                                <span>폰트 사이즈 :<input type="number" class="binbfontsize"> px</span>
+                                <span>폰트 컬러: <input type="color"><input type="text" class="colorNum"
+                                        name="binbfontcolor"></span>
+                                <span>버튼 색상 :<input type="color"><input type="text" class="colorNum"
+                                        name="binbbuttoncolor"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="emaincon">
+                        <input type="hidden" name="iconImg" value="iconImg">
+                        <span class="subject">메인 아이콘</span>
+                        <div class="editctrl">
+                            <span><input type="file" class="file"></span>
+                            <span>가로:<input type="number" name="iconwidth">px &nbsp;&nbsp;
+                            세로:<input type="number" name="iconheight">px</span>
+                        </div>
+                    </div>
+                    <div class="emaincontitle">
+                        <input type="hidden" name="icontitle" value="icontitle">
+                        <span class="subject">메인 아이콘 제목</span>
+                        <div class="editctrl">
+                            <span>내용 : <input type="text" class="words" name="ictitparagh"></span>
+                            <span>폰트 : <select name="ictitfonts">
+                                    <option value="0" selected>폰트를 선택해주세요</option>
+                                    <option value="1">나눔고딕</option>
+                                    <option value="2">Baloo Thambi</option>
+                                    <option value="3">FredokaOne</option>
+                                    <option value="4">Tmoney</option>
+                                </select></span>
+                            <span>폰트 사이즈 <input type="number" name="ictitfontsize"> px</span>
+                            <span>폰트 컬러: <input type="color"><input type="text" class="colorNum"
+                                    name="ictitfontcolor"></span>
+                        </div>
+                    </div>
+                    <div class="emainconwords">
+                        <input type="hidden" name="iconwords" value="iconwords">
+                        <span class="subject">메인 아이콘 내용</span>
+                        <div class="editctrl">
+                            <span>내용 : <input type="text" class="words" name="iccttparagh"></span>
+                            <span>폰트 : <select name="iccttfonts">
+                                    <option value="0" selected>폰트를 선택해주세요</option>
+                                    <option value="1">나눔고딕</option>
+                                    <option value="2">Baloo Thambi</option>
+                                    <option value="3">FredokaOne</option>
+                                    <option value="4">Tmoney</option>
+                                </select></span>
+                            <span>폰트 사이즈 <input type="number" name="iccttfontsize"> px </span>
+                            <span>폰트 컬러: <input type="color"><input type="text" class="colorNum"
+                                    name="icctfontcolor"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="orderBtnBox">
+                    <button type="button" class="orderBtn submit" onclick="submitForm( this.form )">적용하기</button>
+                    <button type="button" class="orderBtn clear">비우기</button>
+                </div>
+
+            </form>
+        </div>
+    </main>
+
+    <script>
+        /////////// 메인페이지//////////////
+        console.log($('.subject:eq(0)').height());
+        $('input[name=choice]').on('click', function () {
+            if ($(this).hasClass('logoIMG')) {
+                $('input[name=choice]').removeAttr('checked');
+                $(this).attr('checked', 'checked');
+                $('.img').show()
+                $('.fonts').hide();
+            } else {
+                $('input[name=choice]').removeAttr('checked', "");
+                $('.img').hide()
+                $('.fonts').show();
+            }
+        })
+
+        $('input[name=usewords], input[name=usebutton]').on('click', function () {
+            if ($(this).hasClass('use')) {
+                $(this).parent().find('input').removeAttr('checked');
+                $(this).attr('checked', 'checked');
+                $(this).parent().parent().children('div').show();
+            } else {
+                $(this).parent().find('input').removeAttr('checked');
+                $(this).attr('checked', 'checked');
+                $(this).parent().parent().children('div').hide();
+            }
+        })
+
+        $('input[type=number]').attr('min', '0').on('change', function () {
+            if ($(this).val() < 0) {
+                $(this).val(0)
+            }
+        })
+
+        $('.slideNum').on('change', function () {
+            $(this).parent().find('p').detach()
+            if ($(this).val() == null) {
+                $(this).val(0)
+            } else if ($(this).val() > 5) {
+                alert('최대 슬라이드 갯수는 5개 입니다.');
+                $(this).val(5)
+            }
+            for (var i = 0; i < $(this).val(); i++) {
+                $(this).parent().append('<p><input type="hidden" name="slideidx' + i + '" value="slide' + i +
+                    '">슬라이드' + Number(i + 1) + ' <input type="file" name="slideimg' + i +
+                    '"> 이미지 크기 <input type="number" name="slSize' + i + '">%</p>').css('gridColumn','1 / 4');
+            }
+        })
+        $('input[type=color]').on('change', function () {
+            $(this).siblings('input').val($(this).val())
+        })
+
+        $('.clear').click(function () {
+            $('input').val("");
+            $('select').val("0");
+        })
+
+        function submitForm(obj) {
+            obj.submit();
+        }
+        $('input[type=radio]').parent().css('gridColumn','1 / 4');
+        $('input[type=radio]').parent().siblings().css('gridColumn','1 / 4');
+    </script>
+</body>
+
+</html>

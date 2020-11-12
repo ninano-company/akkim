@@ -3,7 +3,7 @@
     
     $sql = "
         SELECT
-            nick, note, likey, img
+            nick, note, likey, img, created
             FROM akkVis
             ORDER BY created DESC
             LIMIT 10
@@ -17,7 +17,8 @@
             "nName" => $row[0],
             "desc" => $row[1],
             "like" => $row[2],
-            "image" => $row[3]
+            "image" => $row[3],
+            "crt" => $row[4]
         );
         array_push( $data, $object );
     }

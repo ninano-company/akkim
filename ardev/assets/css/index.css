@@ -1,0 +1,374 @@
+/*===================
+	import fonts
+===================*/
+@import url('https://fonts.googleapis.com/css?family=Baloo+Thambi|Poppins');
+@font-face {
+    font-family: 'Tmoney';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-07@1.0/TmoneyRoundWindExtraBold.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/*===================
+	general
+===================*/
+*,
+*:before,
+*:after {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	background: #fff;
+	color: #999;
+}
+
+body::-webkit-scrollbar {
+	display: none;
+}
+
+h1 { font-family: 'Baloo Thambi',sans-serif; }
+h2,
+h3,
+h4,
+h6 {
+	padding: 0;
+	margin: 0;
+	color: #343434;
+	font-family: 'gothic', sans-serif;
+}
+
+h1 {
+	font-size: 36px;
+}
+
+h2 {
+	font-size: 34px;
+}
+
+h3 {
+	font-size: 30px;
+}
+
+h4 {
+	font-size: 28px;
+}
+
+h5 {
+	font-size: 25px;
+}
+
+h6 {
+	font-size: 18px;
+}
+
+a {
+	color: #333;
+}
+
+p {
+	margin: 8px 0;
+}
+
+/*===================
+	button
+===================*/
+.button {
+	background: #fb6969;
+	border: 0;
+	border-color: transparent;
+	color: #fff;
+	padding: 8px 15px 5px ;
+	border-radius: 15px;
+	font-size: 18px;
+	font-weight: bold;
+}
+
+/*===================
+	colors
+===================*/
+
+/*bg color*/
+.app-bg-color {
+	background: #00a3ca;
+}
+
+.app-bg-color .app-title h4 {
+	color: #fff;
+}
+
+.bg-color-1 {
+	background: #72c800;
+}
+
+.bg-color-2 {
+	background: #ffc700;
+}
+
+.bg-color-3 {
+	background: #ff6400;
+}
+
+.bg-color-4 {
+	background: #006388;
+}
+
+/*border color*/
+.border-color-1 {
+	border: 3px solid #72c800;
+}
+
+.border-color-2 {
+	border: 3px solid #ffc700;
+}
+
+.border-color-3 {
+	border: 3px solid #ff6400;
+}
+
+.border-color-4 {
+	border: 3px solid #006388;
+}
+
+/*border color*/
+.color-1 i {
+	color: #72c800;
+}
+
+.color-2 i {
+	color: #ffc700;
+}
+
+.color-3 i {
+	color: #ff6400;
+}
+
+.color-4 i {
+	color: #006388;
+}
+
+/*===================
+	navbar
+===================*/
+.navbar {
+	width: 100%;
+	height: 60px;
+	padding: 15px 0 20px 0;
+	z-index: 10;
+	background: #fff;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	text-align: center;
+	border-bottom: 2px solid #eee;
+
+}
+.site-title {
+	position: absolute;
+	left: 25px;
+	top:calc(50% - 17px);
+}
+
+.site-title h1 {
+	font-size: 28px;
+	padding: 0;
+	margin: 0;
+	font-weight: 400;
+	color: #fb6969;
+}
+.site-title h1 a {
+	display: block;
+}
+
+
+
+
+/*===================
+	slider
+===================*/
+.slider-slick {
+	position: relative;
+	overflow: hidden;
+}
+.slide_mother {height:100%; width:200%;}
+.slide_mother .slide_item { width:50%; float:left; }
+.dotBox { position: absolute; bottom:5%; left:calc(50% - 15px);}
+.dot {float:left;  background-color: #bbb; width:10px; height:10px; border-radius: 100%; margin:0 5px; }
+.deploy { background-color:#fff ;}
+.slider-slick .slider-entry {
+	position: relative;
+	height: 280px;
+}
+
+
+@media (min-width: 768px) {
+	.slider-slick .slider-entry {
+		position: relative;
+		height: 430px;
+	}
+}
+
+.slider-slick .overlay {
+	background: rgba(0, 0, 0, 0.25);
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	left: 0;
+	top: 0;
+	right: 0;
+}
+
+.slider-slick img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.slider-slick .caption {
+	position: absolute;
+	left: 0;
+	right: 0;
+	margin: 0 auto;
+	top: 25%;
+	color: #fff;
+	z-index: 9;
+	overflow-wrap: break-word;
+	text-align: center;
+}
+
+.slider-slick .caption .container {
+	width:90%;
+	margin:0 auto;
+}
+.slider-slick .caption h2 {
+	color: #fff;
+	font-size:30px;
+	font-weight:700;
+	margin-bottom: 30px;
+	font-family: 'gothic', sans-serif;
+	text-shadow: 2px 2px 3px #000 ;
+}
+
+.slider-slick .caption p {
+	margin-bottom: 18px !important;
+}
+
+.slider-slick .slick-dots {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	display: block;
+	width: 100%;
+}
+
+.slider-slick .slick-dots li {
+	width: auto;
+}
+
+.slider-slick .slick-dots li button {
+	width: 10px;
+	height: 10px;
+	background: #fff;
+	border-radius: 50%;
+}
+
+.slider-slick .slick-dots li button {
+	width: 10px;
+	height: 10px;
+	background: #fff;
+	border-radius: 50%;
+}
+
+.slider-slick .slick-dots li.slick-active button {
+	background: #fb6969;
+}
+
+.slider-slick .slick-dots li button::before {
+	font-size: 0;
+	color: transparent;
+}
+
+
+/*===================
+	offers
+===================*/
+.offers {
+	text-align: center;
+	padding: 15px 0;
+}
+.offers .container {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	grid-template-rows: 1fr 1fr;
+}
+.offers .container .items{
+	box-sizing: border-box;
+	padding:8px;
+}
+.offers .container .items:nth-child(1) { padding-right: 0.2rem; padding-bottom:0.2rem;}
+.offers .container .items:nth-child(2) { padding-left: 0.2rem; padding-bottom:0.2rem;}
+.offers .container .items:nth-child(3) { padding-right: 0.2rem; padding-top:0.2rem;}
+.offers .container .items:nth-child(4) { padding-left: 0.2rem; padding-top:0.2rem;}
+.offers .entry { 
+	display: block;
+	width:100%;
+	height:100%;
+	border-radius: 10px;
+	box-sizing: border-box;
+	padding:0.5rem;
+}
+/* .offers  { background-color: #72c800; } */
+/* .offers  { background-color:  #ffc700;} */
+/* .offers  { background-color:  #ff6400;} */
+/* .offers  { background-color: #006388;} */
+.offers .entry div {margin:0; position: relative; left:22.5%; padding:2px; background-clip: content-box;}
+.offers .entry .playAR {background-color:#72c800;  border-radius: 100%;  border:2px solid #72c800; }
+.offers .entry .openGallery {  background-color:#ffc700;  border-radius: 100%;border:2px solid #ffc700; }
+.offers .entry .maps { background-color: #ff6400; border-radius: 100%;border:2px solid  #ff6400; }
+.offers .entry .translation { background-color:#006388;  border-radius: 100%;border:2px solid #006388; }
+.offers .entry img { width: 40%; display: block; position: relative; left:30%; top:30%;}
+.offers .entry .translation img { width:50%; left:25%; top:25%; }
+.offers .entry i {
+	width: 80px;
+	height: 80px;
+	color: #fff;
+	border-radius: 50%;
+	font-size: 35px;
+	text-align: center;
+	line-height: 70px;
+	margin-bottom: 14px;
+	border: 6px double #fff;
+}
+ .offers .entry p{
+	color:#666;
+	font-size:15px;
+	font-weight: 300;
+}
+.offers .entry h5 { 
+	font-family:'Baloo Thambi' 'Nanum', sans-serif;
+	margin-top: 15px;
+	color:#666;
+	font-weight:600;
+	font-size: 20px;
+}
+
+
+/*===================
+	section, title and bg
+===================*/
+.app-pages {
+	margin-top: 60px;
+}
+/*===================
+	footer
+===================*/
+footer {
+	text-align: center;
+	display: block;
+}

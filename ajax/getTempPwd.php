@@ -5,7 +5,7 @@
         SELECT
             pwd
             FROM akkVis
-            WHERE nick = '{$_POST['nick']}' AND note = '{$_POST['desc']}'
+            WHERE nick = '{$_POST['nick']}' AND note = '{$_POST['desc']}' AND created = '{$_POST['crt']}'
     ";
 
     $result = mysqli_query( $conn, $sql );

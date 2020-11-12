@@ -1,46 +1,35 @@
-<!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset='utf-8'>
-    <title>GeoAR.js demo</title>
-    <script src='https://aframe.io/releases/1.0.4/aframe.min.js'></script>
-    <script src="https://raw.githack.com/jeromeetienne/AR.js/master/aframe/build/aframe-ar.min.js"></script>
-    <script src="https://raw.githack.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js"></script>
-    <script>
-        THREEx.ArToolkitContext.baseURL = 'https://raw.githack.com/jeromeetienne/ar.js/master/three.js/'
-    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScreenShot</title>
 </head>
-
-<body style='margin: 0; overflow: hidden;'>
-    <a-scene
-        vr-mode-ui="enabled: false"
-		embedded
-        arjs='sourceType: webcam; sourceWidth:1280; sourceHeight:960; displayWidth: 1280; displayHeight: 960; debugUIEnabled: false;'>
-        <a-entity id="fox" gltf-model="../lib/models/fox.glb" rotation="0 180 0" scale="1 1 1" animation-mixer/>
-        <a-camera gps-camera rotation-reader></a-camera>
-    </a-scene>
+<body>
+    <video autoplay></video>
+    <canvas id="myCanvas"></canvas>
     <script>
+        // var video = document.createElement('video');
+        // video.width = 1280;
+        // video.height = 780;
+        // video.autoplay = true;
 
-        let model = document.querySelector('#fox');
-        function getLocation() {
-            if (navigator.geolocation) { // GPS를 지원하면
-                navigator.geolocation.getCurrentPosition(function(position) {
-                    var lat = position.coords.latitude;
-                    var lng = position.coords.longitude;
-                    model.setAttribute('gps-entity-place', `latitude: ${lat}; longitude: ${lng};`);
-                    alert(position.coords.latitude + ' ' + position.coords.longitude);
-                }, function(error) {
-                    console.error(error);
-                }, {
-                    enableHighAccuracy: false,
-                    maximumAge: 0,
-                    timeout: Infinity
-                });
-            } else {
-                alert('GPS를 지원하지 않습니다');
+        // video
+        var video = document.querySelector('video');
+        video.width = 1280;
+        video.height = 780;
+        video.autoplay = true;
+
+        var errorCallback = function(e) {
+            console.log('reeejected!', e);
+        };
+
+        navigator.getUserMedia({video: true, audio: false}, function(localMediaStream) {
+            video.src = window.URL.createObjectURL(localMediaStream);
+            video.onloadedmetadata = function(e) {
+
             }
-        }
-        setInterval(getLocation, 5000);
-        // getLocation();
+        }, errorCallback);
+
     </script>
 </body>
+</html>

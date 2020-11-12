@@ -1,0 +1,51 @@
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>증강현실 안내판</title>
+    <!-- include A-Frame obviously -->
+    <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+    <!-- include ar.js for A-Frame -->
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+    <script src="https://rawgit.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js"></script>
+    <!-- <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap" rel="stylesheet"> -->
+    <!-- <script src="../lib/js/html2canvas.min.js"></script> -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <link rel="stylesheet" href="../assets/css/style.css?ver=5">
+    <script src="translation.js"></script>
+</head>
+<body style='margin : 0px; overflow: hidden;'>
+    <div class="gridApp">
+
+        <div class="gridLayer layui gridBgNone">
+            <img class="ui zoom" src="../../lib/ui/tsUI/zoom.png?ver=1"></img>
+            <div class="sideLUi">
+                <img class="sideBar"src="../../lib/ui/tsUI/bar.png?ver=2" alt="">
+                <img class="ui uiSideBtn sideBtn1 rt90 shadow-off" src="../../lib/ui/tsUI/chinese.png" onclick="shadow();"></img>
+                <img class="ui uiSideBtn sideBtn2 rt90 shadow-off" src="../../lib/ui/tsUI/english.png" onclick="shadow();"></img>
+                <img class="ui uiSideBtn sideBtn3 rt90 shadow-off" src="../../lib/ui/tsUI/korean.png" onclick="shadow();"></img>
+                <img class="ui uiSideBtn sideBtn4 rt90 index" src="../../lib/ui/tsUI/goBack.png" onclick="back();"></img>
+            </div>
+        </div>
+
+    </div>
+    <div class="gridLayer layLoad gridBgWhite">
+        <div class="loadContainer">
+            <p class="loadText">안녕하세요 안내판 번역 AR 입니다.</br> 아래 시작하기 버튼을 눌러주세요!</p>
+            <button class="loadBtn">시작하기</button>
+        </div>
+    </div>
+
+    <a-scene vr-mode-ui="enabled: false;" embedded arjs='sourceType: webcam; sourceWidth:1280; sourceHeight:960; displayWidth: 1280; displayHeight: 960; debugUIEnabled: false;'>
+        <a-marker id="target" preset="hero" smooth='true' smoothCount='20' smoothTolerance='0.01' smoothThreshold="2">
+            <a-image id="board" src="../../lib/img/signboard.png" rotation="-90 0 0" position="1 0 1" scale="5 8 6"></a-image>
+            <a-text id="text1" rotation="-90 0 0" position="-0.5 0.2 -1.6" scale="0.6 1.2 0.6" font="../../lib/font/NanumGothic.fnt"></a-text>
+            <a-text id="text2" rotation="-90 0 0" position="-1.1 0.2 -1.1" scale="0.4 0.8 0.4" color="#d6995a" font="../../lib/font/NanumGothic.fnt"></a-text>
+            <a-text id="text3" rotation="-90 0 0" position="-1.1 0.2 -0.3" scale="0.25 0.5 0.25" font="../../lib/font/NanumGothic.fnt"></a-text>
+        </a-marker>
+        <a-entity camera></a-entity>
+    </a-scene>
+
+    <script src="function.js?ver=0"></script>
+    <script src="script.js?ver=13"></script>
+</body>
+</html>

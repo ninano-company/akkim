@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>AR version</title>
+    <link rel="stylesheet" href="css/main.css">
+
+</head>
+
+<body>
+    <header>
+        <a href="../index.html" class="goHome"></a>
+        <a href="#" class="goBack"></a>
+        <h1>AR version</h1>
+    </header>
+    <main>
+        <section>
+            <h2>
+                사용하실 버전을 선택해주세요.<br>
+                Please select the version to use
+            </h2>
+            <div class="select_version">
+                <!-- 버튼 링크 -->
+                <div class="List1 version"><a href="intent://ninanobiz.com/babylon/dev/ver10/index.html#Intent;scheme=https;package=com.android.chrome;end">동물원 버전</a></div>
+                <div class="List2 version"><a href="List.html">리스트 버전</a></div>
+            </div>
+        </section>
+    </main>
+    <script>
+        let backpage = document.getElementsByClassName('goBack')[0];
+        backpage.addEventListener('click',function(){
+            window.history.back();
+        })
+    </script>
+</body>
+
+</html>
