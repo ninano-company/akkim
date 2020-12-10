@@ -18,10 +18,15 @@ AFRAME.registerComponent("gesture-handler", {
 
     this.el.sceneEl.addEventListener("markerFound", (e) => {
       this.isVisible = true;
+      // board.setAttribute('visible', true);
+      // alert();
+      // console.log(e);
     });
 
     this.el.sceneEl.addEventListener("markerLost", (e) => {
       this.isVisible = false;
+      // board.setAttribute('visible', false);
+      // alert();
     });
   },
 
@@ -42,9 +47,9 @@ AFRAME.registerComponent("gesture-handler", {
 
   handlePosition: function (event) {
     if (true) {
-      this.el.object3D.rotation.y +=
+      this.el.object3D.position.x +=
         event.detail.positionChange.x * this.data.rotationFactor;
-      this.el.object3D.rotation.x +=
+      this.el.object3D.position.y -=
         event.detail.positionChange.y * this.data.rotationFactor;
     }
   },
@@ -59,10 +64,10 @@ AFRAME.registerComponent("gesture-handler", {
         this.data.maxScale
       );
 
-      this.el.object3D.position.x +=
-        event.detail.positionChange.x * this.data.rotationFactor;
-      this.el.object3D.position.y -=
-        event.detail.positionChange.y * this.data.rotationFactor;
+      // this.el.object3D.position.x +=
+      //   event.detail.positionChange.x * this.data.rotationFactor;
+      // this.el.object3D.position.y -=
+      //   event.detail.positionChange.y * this.data.rotationFactor;
 
       this.el.object3D.scale.x = this.scaleFactor * this.initialScale.x;
       this.el.object3D.scale.y = this.scaleFactor * this.initialScale.y;

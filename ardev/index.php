@@ -5,7 +5,7 @@
     SELECT
       *
 	  FROM manageAR
-	  WHERE id = 0
+	  WHERE id = 1
     ";
     $result = mysqli_query( $conn, $sql );
     while ( $row = mysqli_fetch_array($result) ) {
@@ -27,7 +27,7 @@
 			 $('.site-title h1').height(".$row[2].");
 			 if('".$row[91]."' !== ''){
 				 $('.site-title h1').html('');
-				 $('.site-title h1').css('backgroundImage','url(".$row[91].")')
+				 $('.site-title h1').css('backgroundImage','url(".$row[91].")');
 				} else{
 					$('.site-title h1').css('backgroundImage','none')
 					$('.site-title h1').css('lineHeight','".$row[2]."px')

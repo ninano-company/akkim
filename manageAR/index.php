@@ -1,3 +1,56 @@
+<?php
+
+  session_start();
+  if( !isset($_SESSION['akkAdmin']) ) {
+    header('location: login.php');
+  }
+  
+  require_once 'assets/process/connection.php';
+
+  $today = date("Y-m-d");
+  $date1 = date("Y-m-d", strtotime("-3 months") );
+  $date2 = date("Y-m-d", strtotime("-6 months") );
+
+  $countAll = 0;
+  $count1 = 0;
+  $count2 = 0;
+
+  $sql = "
+    SELECT COUNT(id) AS count
+      FROM akkViews
+  ";
+  $result = mysqli_query( $conn, $sql );
+  while( $row = mysqli_fetch_row($result) ) {
+    $countAll = $row[0];
+  }
+
+  $sql = "
+    SELECT COUNT(id) AS count
+      FROM akkViews
+      WHERE DATE(created) > '{$date1}'
+  ";
+  $result = mysqli_query( $conn, $sql );
+  while( $row = mysqli_fetch_row($result) ) {
+    $count1 = $row[0];
+  }
+
+  $sql = "
+    SELECT COUNT(id) AS count
+      FROM akkViews
+      WHERE DATE(created) <= '{$date1}' AND DATE(created) > '{$date2}'
+  ";
+  $result = mysqli_query( $conn, $sql );
+  while( $row = mysqli_fetch_row($result) ) {
+    $count2 = $row[0];
+  }
+
+  $sql = "
+
+  ";
+
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,7 +71,7 @@
 <!-- start admin -->
 <section id="admin">
   <!-- start sidebar -->
-  <?= require_once('layout/aside.php') ?>
+  <?php include 'layout/aside.php'; ?>
   <!-- end sidebar -->
   <!-- start content -->
   <div class="content">
@@ -27,7 +80,7 @@
       <!-- start head bottom -->
       <div class="bottom">
         <div class="left">
-          <h1>dashboard</h1>
+          <h1>Dashboard</h1>
         </div>
       </div>
       <!-- end head bottom -->
@@ -36,30 +89,48 @@
     <!-- start with the real content -->
     <div id="real">
       <div class="row">
-        <!-- start head content         -->
+        <!-- start analytics -->
         <div class="col-lg-4">
-          <!-- avtive -->
-          <div class="activeMode">
+          <div class="analytics">
             <div class="card">
-              <h1>Deactivate Mode</h1>
-              <a href="" class="btn btn-info">Activate now</a>
-            </div>
-          </div>
-          <!-- end active -->
-          <!-- Regster Users -->
-          <div class="regsterUsers">
-            <div class="card">
-              <div class="card-top">
-                <h1>500</h1>
-                <i class="fa fa-users"></i>
-              </div>
-              <div class="card-bottom">
-                <p>당월 총 사용자 수</p>
+              <div class="icon"><i class="fa fa-video"></i></div>
+              <div class="text">
+                <h1><?= $count1 ?></h1>
+                <p>이번 분기 총 조회수</p>
               </div>
             </div>
           </div>
-          <!-- end  Regster Users-->
         </div>
+        <div class="col-lg-4">
+          <div class="analytics">
+            <div class="card">
+              <div class="icon"><i class="fab fa-vimeo-v"></i></div>
+              <div class="text">
+                <h1><?= $count2 ?></h1>
+                <p>지난 분기 총 조회수</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="analytics">
+            <div class="card">
+              <div class="icon"><i class="fa fa-users"></i></div>
+              <div class="text">
+                <h1><?= $countAll ?></h1>
+                <p>총 누적 조회수</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- start chatts -->
+        <div class="col-lg-4">
+          <div class="card">
+            <div id="boardRegion" style="height: 320px;" ></div>
+          </div>
+        </div>
+        <!-- end charts -->
+        <!-- end analytics -->
         <div class="col-lg-8">
           <div id="money">
             <div class="card">
@@ -68,389 +139,6 @@
           </div>
         </div>
         <!-- end head content -->
-        <!-- start analytics -->
-        <div class="col-lg-3">
-          <div class="analytics">
-            <div class="card">
-              <div class="icon"><i class="fa fa-video"></i></div>
-              <div class="text">
-                <h1>984</h1>
-                <p>Total Movies</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-3">
-          <div class="analytics">
-            <div class="card">
-              <div class="icon"><i class="fab fa-vimeo-v"></i></div>
-              <div class="text">
-                <h1>1455</h1>
-                <p>Total Tv-Series</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-3">
-          <div class="analytics">
-            <div class="card">
-              <div class="icon"><i class="fa fa-users"></i></div>
-              <div class="text">
-                <h1>32</h1>
-                <p>Total users</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-3">
-          <div class="analytics">
-            <div class="card">
-              <div class="icon"><i class="fa fa-envelope"></i></div>
-              <div class="text">
-                <h1>43</h1>
-                <p>Total emails</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- end analytics -->
-        <!-- start user -->
-        <div class="col-lg-6">
-          <div class="users">
-            <div class="card">
-              <h1 class="head">Users</h1>
-              <div class="user">
-                <div class="uImg"><img src="img/act/1.jpg" alt=""></div>
-                <div class="info">
-                  <h1>Josephine Walker</h1>
-                  <p>Apple Iwork 08 Review</p>
-                </div>
-                <div class="type">
-                  <div class="btn btn-info">Free</div>
-                </div>
-              </div>
-              <div class="user">
-                <div class="uImg"><img src="img/act/2.jpg" alt=""></div>
-                <div class="info">
-                  <h1>Josephine Walker</h1>
-                  <p>Apple Iwork 08 Review</p>
-                </div>
-                <div class="type">
-                  <div class="btn btn-success">pro</div>
-                </div>
-              </div>
-              <div class="user">
-                <div class="uImg"><img src="img/act/3.jpg" alt=""></div>
-                <div class="info">
-                  <h1>Josephine Walker</h1>
-                  <p>Apple Iwork 08 Review</p>
-                </div>
-                <div class="type">
-                  <div class="btn btn-info">Free</div>
-                </div>
-              </div>
-              <div class="user">
-                <div class="uImg"><img src="img/act/4.jpg" alt=""></div>
-                <div class="info">
-                  <h1>Josephine Walker</h1>
-                  <p>Apple Iwork 08 Review</p>
-                </div>
-                <div class="type">
-                  <div class="btn btn-info">Free</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- end user -->
-        <!-- start user -->
-        <div class="col-lg-6">
-          <div class="users">
-            <div class="card">
-              <h1 class="head">messages</h1>
-              <div class="user">
-                <div class="uImg"><img src="img/act/5.jpg" alt=""></div>
-                <div class="info">
-                  <h1>Josephine Walker</h1>
-                  <p>Apple Iwork 08 Review</p>
-                </div>
-                <div class="type">
-                  <div class="btn btn-primary">read</div>
-                </div>
-              </div>
-              <div class="user">
-                <div class="uImg"><img src="img/act/6.jpg" alt=""></div>
-                <div class="info">
-                  <h1>Josephine Walker</h1>
-                  <p>Apple Iwork 08 Review</p>
-                </div>
-                <div class="type">
-                  <div class="btn btn-primary">read</div>
-                </div>
-              </div>
-              <div class="user">
-                <div class="uImg"><img src="img/act/7.jpg" alt=""></div>
-                <div class="info">
-                  <h1>Josephine Walker</h1>
-                  <p>Apple Iwork 08 Review</p>
-                </div>
-                <div class="type">
-                  <div class="btn btn-primary">read</div>
-                </div>
-              </div>
-              <div class="user">
-                <div class="uImg"><img src="img/act/8.jpg" alt=""></div>
-                <div class="info">
-                  <h1>Josephine Walker</h1>
-                  <p>Apple Iwork 08 Review</p>
-                </div>
-                <div class="type">
-                  <div class="btn btn-primary">read</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- end user -->
-
-        <!-- start Active Leads -->
-        <div class="col-lg-7">
-          <div id="leads">
-            <div class="card">
-              <h1 class="head">Active Leads</h1>
-              <table class="table">
-                <!-- start head -->
-                <thead>
-                  <tr>
-                    <th>type</th>
-                    <th>lead number</th>
-                    <th>views</th>
-                    <th>Favorites</th>
-                    <th>Visit</th>
-                    <th>Last Action</th>
-                  </tr>
-                </thead>
-                <!-- end head -->
-                <!-- start body -->
-                <tbody>
-                  <!-- start rows -->
-                  <tr>
-                    <td class="text-primary">Seller</td>
-                    <td>mohamed said</td>
-                    <td>532</td>
-                    <td>864</td>
-                    <td>12:23 AM</td>
-                    <td><span class="table-icon fa fa-envelope"></span> 42/6/2018</td>
-                  </tr>
-                  <tr>
-                    <td class="text-info">Buyer</td>
-                    <td>Denise Ann</td>
-                    <td>150</td>
-                    <td>150</td>
-                    <td>9:23 AM</td>
-                    <td><span class="table-icon fa fa-envelope"></span> 11/9/2015</td>
-                  </tr>
-                  <tr>
-                    <td class="text-info">Buyer</td>
-                    <td>Denise Ann</td>
-                    <td>150</td>
-                    <td>150</td>
-                    <td>9:23 AM</td>
-                    <td><span class="table-icon fa fa-envelope"></span> 11/9/2015</td>
-                  </tr>
-                  <tr>
-                    <td class="text-primary">Seller</td>
-                    <td>mohamed said</td>
-                    <td>532</td>
-                    <td>864</td>
-                    <td>12:23 AM</td>
-                    <td><span class="table-icon fa fa-envelope"></span> 42/6/2018</td>
-                  </tr>
-                  <tr>
-                    <td class="text-primary">Seller</td>
-                    <td>mohamed said</td>
-                    <td>532</td>
-                    <td>864</td>
-                    <td>12:23 AM</td>
-                    <td><span class="table-icon fa fa-envelope"></span> 42/6/2018</td>
-                  </tr>
-                  <tr>
-                    <td class="text-info">Buyer</td>
-                    <td>Denise Ann</td>
-                    <td>150</td>
-                    <td>150</td>
-                    <td>9:23 AM</td>
-                    <td><span class="table-icon fa fa-envelope"></span> 11/9/2015</td>
-                  </tr>
-                  <!-- end rows -->
-                </tbody>
-                <!-- end body -->
-              </table>
-            </div>
-          </div>
-        </div>
-        <!-- end Active Leads -->
-
-        <!-- start task card -->
-        <div class="col-lg-5">
-          <div id="active">
-            <div class="card">
-              <p class="head">Active user right now</p>
-              <div class="info">
-                <div class="col">
-                  <h1>937</h1>
-                  <p>users</p>
-                </div>
-                <div class="col">
-                  <h1>82</h1>
-                  <p>guests</p>
-                </div>
-              </div>
-              <p class="head">Page view per aria</p>
-              <div class="aria">
-                <p>22 from the United States of America</p>
-                <p>96 from the egypt</p>
-                <p>667 from the canada</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- end task card -->
-
-        <!-- start Questions per Product -->
-        <div class="col-lg-4">
-          <div id="questions">
-            <div class="card">
-              <h1 class="head">Questions per Product</h1>
-
-              <div class="pro">
-                <!-- start top -->
-                <div class="proTop">
-                  <div class="left">
-                    <p>apple store</p>
-                  </div>
-                  <div class="right">
-                    <p>29215 Tickets / 1041 Pending</p>
-                  </div>
-                </div>
-                <!-- end top -->
-
-                <!-- start bottom -->
-                <div class="progress">
-                  <div class="progress-bar" style="width: 60%;"></div>
-                </div>
-                <!-- end bottom -->
-              </div>
-              <div class="pro">
-                <!-- start top -->
-                <div class="proTop">
-                  <div class="left">
-                    <p>google play</p>
-                  </div>
-                  <div class="right">
-                    <p>9271 Tickets / 1220 Pending</p>
-                  </div>
-                </div>
-                <!-- end top -->
-
-                <!-- start bottom -->
-                <div class="progress">
-                  <div class="progress-bar" style="width: 10%;"></div>
-                </div>
-                <!-- end bottom -->
-              </div>
-              <div class="pro">
-                <!-- start top -->
-                <div class="proTop">
-                  <div class="left">
-                    <p>codecanyon</p>
-                  </div>
-                  <div class="right">
-                    <p>235 Tickets / 101 Pending</p>
-                  </div>
-                </div>
-                <!-- end top -->
-
-                <!-- start bottom -->
-                <div class="progress">
-                  <div class="progress-bar" style="width: 40%;"></div>
-                </div>
-                <!-- end bottom -->
-              </div>
-              <div class="pro">
-                <!-- start top -->
-                <div class="proTop">
-                  <div class="left">
-                    <p>themeforest</p>
-                  </div>
-                  <div class="right">
-                    <p>18 Tickets / 7 Pending</p>
-                  </div>
-                </div>
-                <!-- end top -->
-
-                <!-- start bottom -->
-                <div class="progress">
-                  <div class="progress-bar" style="width: 80%;"></div>
-                </div>
-                <!-- end bottom -->
-              </div>
-              <div class="pro">
-                <!-- start top -->
-                <div class="proTop">
-                  <div class="left">
-                    <p>google play</p>
-                  </div>
-                  <div class="right">
-                    <p>9271 Tickets / 1220 Pending</p>
-                  </div>
-                </div>
-                <!-- end top -->
-
-                <!-- start bottom -->
-                <div class="progress">
-                  <div class="progress-bar" style="width: 10%;"></div>
-                </div>
-                <!-- end bottom -->
-              </div>
-              <div class="pro">
-                <!-- start top -->
-                <div class="proTop">
-                  <div class="left">
-                    <p>google play</p>
-                  </div>
-                  <div class="right">
-                    <p>9271 Tickets / 1220 Pending</p>
-                  </div>
-                </div>
-                <!-- end top -->
-
-                <!-- start bottom -->
-                <div class="progress">
-                  <div class="progress-bar" style="width: 10%;"></div>
-                </div>
-                <!-- end bottom -->
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- end Questions per Product -->
-
-        <!-- start chatts -->
-        <div class="col-lg-4">
-          <div class="card">
-            <div id="IndexChartOne" style="height: 320px;" ></div>
-          </div>
-        </div>
-        <!-- end charts -->
-
-        <!-- start chatts -->
-        <div class="col-lg-4">
-          <div class="card">
-            <div id="IndexChartTwo" style="height: 320px;" ></div>
-          </div>
-        </div>
-        <!-- end charts -->
 
       </div>
     </div>
@@ -464,8 +152,72 @@
 <script src="js/tether.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="js/highcharts.js"></script>
-<script src="js/chart.js"></script>
 <script src="js/app.js"></script>
+<script>
+  var myChart = Highcharts.chart('chart', {
+      chart: {
+          type: 'bar'
+      },
+      title: {
+          text: '상위 5개 안내판 조회수'
+      },
+      xAxis: {
+          categories: ['대왕암1', '신불산1', '대왕암3','북구청', '태화강1']
+      },
+      yAxis: {
+          title: {
+              text: ''
+          }
+      },
+      series: [{
+          name: '조회수',
+          data: [17,10,30,44,33]
+      }]
+  });
+
+  Highcharts.chart('boardRegion', {
+      chart: {
+          plotBackgroundColor: null,
+          plotBorderWidth: null,
+          plotShadow: false,
+          type: 'pie'
+      },
+      title: {
+          text: '지역별 안내판 비율'
+      },
+      tooltip: {
+          pointFormat: '{series.name}: <b>{point.y}</b>'
+      },
+      plotOptions: {
+          pie: {
+              allowPointSelect: true,
+              cursor: 'pointer',
+              dataLabels: {
+                  enabled: true
+              }
+          }
+      },
+      series: [{
+          name: '안내판 수',
+          colorByPoint: true,
+          data: [{
+              name: '울산광역시',
+              y: 10,
+              sliced: true,
+              selected: true
+          }, {
+              name: '경상남도',
+              y: 5
+          }, {
+              name: '경상북도',
+              y: 3
+          }, {
+              name: '충청도',
+              y: 1
+          }]
+      }]
+    });
+</script>
 <!-- end screpting -->
 </body>
 </html>

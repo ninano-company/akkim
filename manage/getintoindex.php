@@ -4,7 +4,7 @@
     SELECT
       *
 	  FROM manageAR
-	  WHERE id = 0
+	  WHERE id = 1
 	";
 	$default = '';
 	$consistant = '';
