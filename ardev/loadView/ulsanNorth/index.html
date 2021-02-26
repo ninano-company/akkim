@@ -1,0 +1,86 @@
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>울산 북구 3D 로드맵</title>
+    <!-- include A-Frame obviously -->
+    <script src="https://aframe.io/releases/0.9.2/aframe.min.js"></script>
+    <!-- include ar.js for A-Frame -->
+    <script src="https://rawgit.com/jeromeetienne/AR.js/master/aframe/build/aframe-ar.min.js"></script>
+    <script src="https://rawgit.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js"></script>
+    <script src="https://cdn.rawgit.com/tizzle/aframe-sprite-component/master/dist/aframe-sprite-component.min.js"></script>
+    <!-- <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap" rel="stylesheet"> -->
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body style='margin : 0px; overflow: hidden;'>
+  
+  <a-scene vr-mode-ui="enabled: false;" embedded arjs='sourceType: webcam; sourceWidth:1280; sourceHeight:960; displayWidth: 1280; displayHeight: 960; debugUIEnabled: false;'>
+    <a-assets>
+      <a-asset-item id="map" response-type="arraybuffer" src="../../assets/models/map/UlsanNorthMapL.glb"></a-asset-item>
+      <a-asset-item id="airport" response-type="arraybuffer" src="../../assets/models/map/button/airport.glb"></a-asset-item>
+      <a-asset-item id="cheong" response-type="arraybuffer" src="../../assets/models/map/button/cheong.glb"></a-asset-item>
+      <a-asset-item id="dongdaesan" response-type="arraybuffer" src="../../assets/models/map/button/dongdaesan.glb"></a-asset-item>
+      <a-asset-item id="muryongsan" response-type="arraybuffer" src="../../assets/models/map/button/muryongsan.glb"></a-asset-item>
+      <a-asset-item id="saranggil" response-type="arraybuffer" src="../../assets/models/map/button/saranggil.glb"></a-asset-item>
+    </a-assets>
+    
+    <!-- define a camera which will move according to the marker position -->
+    <a-marker click-listener cursor="rayOrigin: touch" id="target" preset="hiro" smooth='true' >
+      <!-- <a-box click-listener id="mapModel" position="0 0 0" shadow></a-box> -->
+      <a-entity id="mapModel" gltf-model="#map" position="0 0 0" scale="0.01 0.01 0.01" rotation="-90 0 0">
+        <a-entity id="btn1" gltf-model="#airport" position="-150 0 50" scale="30 30 30" rotation="0 0 0"></a-entity>
+        <a-entity id="btn2" gltf-model="#cheong" position="-60 10 120" scale="30 30 30" rotation="0 0 0"></a-entity>
+        <a-entity id="btn3" gltf-model="#dongdaesan" position="30 0 -150" scale="30 30 30" rotation="0 0 0"></a-entity>
+        <a-entity id="btn4" gltf-model="#muryongsan" position="60 0 50" scale="30 30 30" rotation="0 0 0"></a-entity>
+        <a-entity id="btn5" gltf-model="#saranggil" position="150 0 -30" scale="30 30 30" rotation="0 0 0"></a-entity>
+      </a-entity>
+    </a-marker>
+    <!-- <a-sprite id="sprite" position="0 0 -1" resize="1 1 1" rotation="-30 0 0" src="../../assets/images/flags/korea.png"></a-sprite> -->
+    <a-entity camera></a-entity>
+  </a-scene>
+  
+  <div class="app">
+    <img class="button KR" src="../../assets/images/flags/korea.png" alt="대한민국 국기">
+    <img class="button EN" src="../../assets/images/flags/usa.png" alt="미국 국기">
+  </div>
+  <!-- <script src="script.js?ver=0"></script></script> -->
+  <script>
+    let map = document.querySelector('#mapModel');
+    let btn1 = document.querySelector('#btn1');
+    let btn2 = document.querySelector('#btn2');
+    let btn3 = document.querySelector('#btn3');
+    let btn4 = document.querySelector('#btn4');
+    let btn5 = document.querySelector('#btn5');
+    // let 
+
+    AFRAME.registerComponent('click-listener', {
+      init: function () {
+        map.addEventListener('click', function () {
+          alert();
+        })
+        btn1.addEventListener('click', function() {
+          alert('btn1');
+        })
+        btn1.addEventListener('click', function() {
+          alert('btn1');
+        })
+        btn1.addEventListener('click', function() {
+          alert('btn1');
+        })
+        btn1.addEventListener('click', function() {
+          alert('btn1');
+        })
+      }
+    })
+
+    // map.addEventListener('click', function() {
+    //   alert();
+    // });
+
+    // AFRAME.registerComponent('markerhandler', {
+    //   init: function() {
+    //     const target = document.querySelector('#target');
+    //   }
+    // });
+  </script>
+</body>
+</html>

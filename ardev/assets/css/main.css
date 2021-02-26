@@ -908,3 +908,7 @@ position:absolute; left:40px; top:30px; background-color: skyblue;} */
   bottom: 40px;
   border: 2px solid #fff;
 }
+
+model-viewer {
+  width: 100%;
+}

@@ -8,10 +8,31 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <title>AR</title>
-    <link rel="stylesheet" href="css/main.css?Ver=1">
+    <link rel="stylesheet" href="css/main.css?Ver=2">
     <script type="text/javascript" src="../assets/js/jquery-3.4.1.min.js"></script>
     <script type="text/javascript" src="../assets/js/jquery-ui.min.js"></script>
     <script type="text/javascript" src="../assets/js/my-app.js?ver=30"></script>
+    <!-- Loads <model-viewer> for modern browsers: -->
+    <script type="module"
+    src="https://unpkg.com/@google/model-viewer/dist/model-viewer.js">
+    </script>
+
+    <!-- Loads <model-viewer> for old browsers like IE11: -->
+    <script nomodule
+    src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js">
+    </script>
+
+    <!-- The following libraries and polyfills are recommended to maximize browser support -->
+    <!-- NOTE: you must adjust the paths as appropriate for your project -->
+    
+    <!-- 🚨 REQUIRED: Web Components polyfill to support Edge and Firefox < 63 -->
+    <script src="https://unpkg.com/@webcomponents/webcomponentsjs@2.1.3/webcomponents-loader.js"></script>
+
+    <!-- 💁 OPTIONAL: Intersection Observer polyfill for better performance in Safari and IE11 -->
+    <script src="https://unpkg.com/intersection-observer@0.5.1/intersection-observer.js"></script>
+
+    <!-- 💁 OPTIONAL: Resize Observer polyfill improves resize behavior in non-Chrome browsers -->
+    <script src="https://unpkg.com/resize-observer-polyfill@1.5.1/dist/ResizeObserver.js"></script>
 </head>
 
 <body>
@@ -37,7 +58,7 @@
             <div class="sectionImg">
                 <a
                     href="intent://arvr.google.com/scene-viewer/1.0?file=https://ninanobiz.com/akkim/ardev/assets/models/Tiger_Y_Clip_01_L.glb&mode=ar_only&title=호랑이&sound=https://ninanobiz.com/akkim/ardev/assets/sounds/background/zoo.mp3#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;">
-                    <img src="css/images/tigerY.jpg" alt="/">
+                    <img src="../../ardev/babylon/css/images/tigerY.jpg" alt="/">
                 </a>
             </div>
             <p class="sec_title">아기 호랑이</p>
@@ -48,7 +69,7 @@
             <div class="sectionImg">
                 <a
                     href="intent://arvr.google.com/scene-viewer/1.0?file=https://ninanobiz.com/akkim/ardev/assets/models/Leopard_M_Clip_01_L.glb&mode=ar_only&title=표범&sound=https://ninanobiz.com/akkim/ardev/assets/sounds/background/zoo.mp3#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;"><img
-                        src="css/images/AR_2.jpg" alt="/"></a>
+                        src="../../ardev/babylon/css/images/AR_2.jpg" alt="/"></a>
             </div>
             <p class="sec_title">아빠 표범</p>
             <span class="desc">동물AR</span>
@@ -58,7 +79,7 @@
             <div class="sectionImg">
                 <a
                     href="intent://arvr.google.com/scene-viewer/1.0?file=https://ninanobiz.com/akkim/ardev/assets/models/Lion_M_03_L.glb&mode=ar_only&title=사자&sound=https://ninanobiz.com/akkim/ardev/assets/sounds/background/Safari-mix.mp3#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;"><img
-                        src="css/images/lionM.jpg" alt="/"></a>
+                        src="../../ardev/babylon/css/images/lionM.jpg" alt="/"></a>
             </div>
             <p class="sec_title">아빠 사자</p>
             <span class="desc">동물AR</span>
@@ -68,7 +89,7 @@
             <div class="sectionImg">
                 <a
                     href="intent://arvr.google.com/scene-viewer/1.0?file=https://ninanobiz.com/akkim/ardev/assets/models/RedDeer_M_Clip_01_L.glb&mode=ar_only&title=사슴&sound=https://ninanobiz.com/akkim/ardev/assets/sounds/background/zoo.mp3#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;">
-                    <img src="css/images/deerM.jpg" alt="/">
+                    <img src="../../ardev/babylon/css/images/deerM.jpg" alt="/">
                 </a>
             </div>
             <p class="sec_title">아빠 사슴</p>
@@ -79,7 +100,7 @@
             <div class="sectionImg">
                 <a
                     href="intent://arvr.google.com/scene-viewer/1.0?file=https://ninanobiz.com/akkim/ardev/assets/models/Stegosaurus_L.glb&mode=ar_only&title=스테고사우르스&sound=https://ninanobiz.com/akkim/ardev/assets/sounds/background/dinos.mp3#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;">
-                    <img src="css/images/stegosaurus.jpg" alt="/">
+                    <img src="../../ardev/babylon/css/images/stegosaurus.jpg" alt="/">
                 </a>
             </div>
             <p class="sec_title">스테고사우르스</p>
@@ -90,7 +111,7 @@
             <div class="sectionImg">
                 <a
                     href="intent://arvr.google.com/scene-viewer/1.0?file=https://ninanobiz.com/akkim/ardev/assets/models/Tyrannosaurus_L_R1.glb&mode=ar_only&title=티라노사우르스&sound=https://ninanobiz.com/akkim/ardev/assets/sounds/background/dinos.mp3#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;">
-                    <img src="css/images/TyrannosaurusBanner.png" alt="/">
+                    <img src="../../ardev/babylon/css/images/TyrannosaurusBanner.png" alt="/">
                 </a>
             </div>
             <p class="sec_title">티라노사우르스</p>
@@ -101,7 +122,7 @@
             <div class="sectionImg">
                 <a
                     href="intent://arvr.google.com/scene-viewer/1.0?file=https://ninanobiz.com/akkim/ardev/assets/models/Dolphin_L.glb&mode=ar_only&title=돌고래&sound=https://ninanobiz.com/akkim/ardev/assets/sounds/background/aqua.mp3#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;">
-                    <img src="css/images/dolphin.jpg" alt="/">
+                    <img src="../../ardev/babylon/css/images/dolphin.jpg" alt="/">
                 </a>
             </div>
             <p class="sec_title">돌고래</p>
@@ -112,7 +133,7 @@
             <div class="sectionImg">
                 <a
                     href="intent://arvr.google.com/scene-viewer/1.0?file=https://ninanobiz.com/akkim/ardev/assets/models/Orca_L.glb&mode=ar_only&title=범고래&sound=https://ninanobiz.com/akkim/ardev/assets/sounds/background/aqua.mp3#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;">
-                    <img src="css/images/orca.jpg" alt="/">
+                    <img src="../../ardev/babylon/css/images/orca.jpg" alt="/">
                 </a>
             </div>
             <p class="sec_title">범고래</p>
@@ -122,8 +143,8 @@
             <h2 class="hidden">가오리</h2>
             <div class="sectionImg">
                 <a
-                    href="intent://arvr.google.com/scene-viewer/1.0?file=https://ninanobiz.com/akkim/ardev/assets/models/Stingray_L.glb&mode=ar_only&title=가오리&sound=https://ninanobiz.com/akkim/ardev/assets/sounds/background/underwater.mp3#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;">
-                    <img src="css/images/stingray.jpg" alt="/">
+                    href="intent://arvr.google.com/scene-viewer/1.0?file=https://ninanobiz.com/akkim/ardev/assets/models/signboards/example.glb&mode=ar_only&title=가오리&sound=https://ninanobiz.com/akkim/ardev/assets/sounds/background/underwater.mp3#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;">
+                    <img src="../../ardev/babylon/css/images/stingray.jpg" alt="/">
                 </a>
             </div>
             <p class="sec_title">가오리</p>
@@ -134,12 +155,22 @@
             <div class="sectionImg">
                 <a
                     href="intent://arvr.google.com/scene-viewer/1.0?file=https://ninanobiz.com/akkim/ardev/assets/models/Nemo.glb&mode=ar_only&title=니모&sound=https://ninanobiz.com/akkim/ardev/assets/sounds/background/aquaNemo.mp3#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;">
-                    <img src="css/images/nemo.jpg" alt="/">
+                    <img src="../../ardev/babylon/css/images/nemo.jpg" alt="/">
                 </a>
             </div>
             <p class="sec_title">니모</p>
             <span class="desc">바다AR</span>
         </section>
+        <!-- <section>
+            <model-viewer 
+                ar 
+                alt="Orca_L" 
+                src="../../ardev/assets/models/Orca_L.glb"
+                auto-rotate
+                camera-controls
+                shadow-intensity='1'
+                background-color="#70BCD1"></model-viewer>
+        </section> -->
     </main>
 
     <script>

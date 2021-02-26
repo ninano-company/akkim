@@ -1,0 +1,163 @@
+<html>
+<head>
+<title>Pattern marker example with Three.js</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+<style>
+html,body {
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height: 100%;
+	text-align: center;
+	overflow-x: hidden;
+}
+.portrait canvas {
+	transform-origin: 0 0;
+	transform: rotate(-90deg) translateX(-100%);
+}
+.desktop canvas {
+ 	transform: scale(-1, 1);
+}
+</style>
+</head>
+<body>
+
+<!--<script async src="../build/artoolkitNft.min.js"></script>-->
+<script async src="../build/artoolkit.debug.js"></script>
+<script src="../js/artoolkit.api.js"></script>
+<script async src="js/third_party/three.js/three.min.js"></script>
+<script async src="../js/artoolkit.three.js"></script>
+
+<script>
+
+window.ARThreeOnLoad = function() {
+
+	class PickHelper {
+		constructor() {
+		this.raycaster = new THREE.Raycaster();
+		this.pickedObject = null;
+		}
+		pick(normalizedPosition, scene, camera, time) {
+		// restore the color if there is a picked object
+			// cast a ray through the frustum
+			this.raycaster.setFromCamera(normalizedPosition, camera);
+			// get the list of objects the ray intersected
+			const intersectedObjects = this.raycaster.intersectObjects(scene.children);
+			if (intersectedObjects.length) {
+				// pick the first object. It's the closest one
+				this.pickedObject = intersectedObjects[0].object;
+				console.log(this.pickedObject);
+			}
+		}
+	}
+
+
+	ARController.getUserMediaThreeScene({maxARVideoSize: 1000, cameraParam: 'Data/camera_para.dat',
+	onSuccess: function(arScene, arController, arCamera) {
+
+		const canvas = document.querySelector('canvas');
+
+		document.body.className = arController.orientation;
+		
+		var renderer = new THREE.WebGLRenderer({antialias: true});
+		if (arController.orientation === 'portrait') {
+			var w = (window.innerWidth / arController.videoHeight) * arController.videoWidth;
+			var h = window.innerWidth;
+			renderer.setSize(w, h);
+		} else {
+			if (/Android|mobile|iPad|iPhone/i.test(navigator.userAgent)) {
+				renderer.setSize(window.innerWidth, (window.innerWidth / arController.videoWidth) * arController.videoHeight);
+			} else {
+				renderer.setSize(arController.videoWidth, arController.videoHeight);
+				document.body.className += ' desktop';
+			}
+		}
+		
+		document.body.insertBefore(renderer.domElement, document.body.firstChild);
+		
+		var rotationV = 0;
+		var rotationTarget = 0;
+		
+		renderer.domElement.addEventListener('click', function(ev) {
+			ev.preventDefault();
+			rotationTarget += 1;
+			console.log(ev);
+		}, false);
+		
+		var sphere = new THREE.Mesh(
+			new THREE.SphereGeometry(0.5, 8, 8),
+			new THREE.MeshNormalMaterial()
+			);
+			sphere.material.flatShading;
+			sphere.position.z = 0.5;
+			
+			arController.loadMarker('Data/patt.hiro', function(markerId) {
+				var markerRoot = arController.createThreeMarker(markerId);
+				markerRoot.add(sphere);
+				arScene.scene.add(markerRoot);
+			});
+			
+			var tick = function() {
+				arScene.process();
+				
+				const canvas = renderer.domElement;
+				rotationV += (rotationTarget - sphere.rotation.z) * 0.05;
+				sphere.rotation.z += rotationV;
+				rotationV *= 0.8;
+
+				pickHelper.pick(pickPosition, arScene.scene, camera, time);
+				
+				arScene.renderOn(renderer);
+				requestAnimationFrame(tick);
+			};
+			
+			tick();
+			const pickPosition = { x: 0, y: 0 };
+			const pickHelper = new PickHelper();
+			clearPickPosition();
+			
+			function getCanvasRelativePosition(event) {
+				const rect = canvas.getBoundingClientRect();
+				return {
+					x: (event.clientX - rect.left) * canvas.width  / rect.width,
+					y: (event.clientY - rect.top ) * canvas.height / rect.height,
+				};
+			}
+			
+			function setPickPosition(event) {
+				const pos = getCanvasRelativePosition(event);
+				pickPosition.x = (pos.x / canvas.width ) *  2 - 1;
+				pickPosition.y = (pos.y / canvas.height) * -2 + 1;  // note we flip Y
+			}
+			
+			function clearPickPosition() {
+			// unlike the mouse which always has a position
+			// if the user stops touching the screen we want
+			// to stop picking. For now we just pick a value
+			// unlikely to pick something
+			pickPosition.x = -100000;
+			pickPosition.y = -100000;
+		}
+
+		window.addEventListener('touchstart', (event) => {
+			// prevent the window from scrolling
+			event.preventDefault();
+			setPickPosition(event.touches[0]);
+		}, {passive: false});
+
+		window.addEventListener('touchend', clearPickPosition);
+
+
+	}});
+
+	delete window.ARThreeOnLoad;
+
+};
+
+if (window.ARController && ARController.getUserMediaThreeScene) {
+	ARThreeOnLoad();
+}
+</script>
+
+</body>
+</html>

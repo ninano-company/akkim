@@ -5,8 +5,9 @@ let buttonEN = document.querySelector('.button.EN');
 let boardKR = document.querySelector('#AnDongHalfKR');
 let boardEN = document.querySelector('#AnDongHalfEN');
 
-boardKR.setAttribute('visible', false);
+boardKR.setAttribute('visible', true);
 boardEN.setAttribute('visible', false);
+buttonKR.style.opacity = 1;
 
 let target = document.querySelector('#target');
 
