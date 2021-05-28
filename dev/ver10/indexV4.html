@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <title>Babylon.js sample code</title>
+
+    <!-- Babylon.js -->
+    <script src="https://code.jquery.com/pep/0.4.2/pep.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.6.2/dat.gui.min.js"></script>
+    <script src="https://preview.babylonjs.com/ammo.js"></script>
+    <script src="https://preview.babylonjs.com/cannon.js"></script>
+    <script src="https://preview.babylonjs.com/Oimo.js"></script>
+    <script src="https://preview.babylonjs.com/earcut.min.js"></script>
+    <script src="../../assets/dist/babylon.js"></script>
+    <script src="https://preview.babylonjs.com/materialsLibrary/babylonjs.materials.min.js"></script>
+    <script src="https://preview.babylonjs.com/proceduralTexturesLibrary/babylonjs.proceduralTextures.min.js"></script>
+    <script src="https://preview.babylonjs.com/postProcessesLibrary/babylonjs.postProcess.min.js"></script>
+    <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.js"></script>
+    <script src="https://preview.babylonjs.com/serializers/babylonjs.serializers.min.js"></script>
+    <script src="https://preview.babylonjs.com/gui/babylon.gui.min.js"></script>
+    <script src="https://preview.babylonjs.com/inspector/babylon.inspector.bundle.js"></script>
+
+    <style>
+      html, body {
+        overflow: hidden;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+
+      #renderCanvas {
+        width: 100%;
+        height: 100%;
+        touch-action: none;
+      }
+    </style>
+  </head>
+<body>
+  <canvas id="renderCanvas"></canvas>
+  <script>
+    var canvas = document.getElementById("renderCanvas");
+
+    var engine = null;
+    var scene = null;
+    var sceneToRender = null;
+
+    var createDefaultEngine = function() { return new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true }); };
+
+    //Set Variables
+
+    const pathModel = '../../../../akkim/ardev/assets/models/';
+    const pathBox = '../../../../akkim/ardev/assets/GUI/'
+
+    let loadedChk = 0;
+    let firstChk = false;
+    let createMode = false;
+    let viewerMode = false;
+    let editorMode = false;
+    let selectMode = false;
+    let deleteMode = false;
+    let clicked = false;
+
+    let currentMesh = null;
+
+    var setBtn = false;
+    var animalNum = -1;
+    var loadedModel = new Array();
+    var loadedSkin = new Array();
+    var loadedBox = new Array();
+    var loadedBoxSkin = new Array();
+    var loadedMenu = new Array();
+    var loadedMenuSkin = new Array();
+
+    //--------------
+
+    var createScene = async function () {
+    
+      // This creates a basic Babylon Scene object (non-mesh)
+      var scene = new BABYLON.Scene(engine);
+  
+      // This creates and positions a free camera (non-mesh)
+      var camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 1, -5), scene);
+  
+      // This targets the camera to scene origin
+      camera.setTarget(BABYLON.Vector3.Zero());
+  
+      // This attaches the camera to the canvas
+      // camera.attachControl(canvas, true);
+  
+      // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
+      var light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
+  
+      // Default intensity is 1. Let's dim the light a small amount
+      light.intensity = 0.7;
+  
+      var dirLight = new BABYLON.DirectionalLight('light', new BABYLON.Vector3(0, -1, -0.5), scene);
+      dirLight.position = new BABYLON.Vector3(0.1, 1, -0.1);
+
+      //GUI
+
+      BABYLON.SceneLoader.ImportMesh("", pathBox + "tigerBoxV1.glb", "", scene, function (meshes) {
+        loadedBox[0] = meshes[0];
+        loadedBoxSkin[0] = meshes[1];
+        loadedBox[0].scaling.scaleInPlace(0.2);
+        loadedBoxSkin[0].isPickable = false;
+        loadedBoxSkin[0].isVisible = false;
+
+        loadedChk++;
+        if (loadedChk == 6) {
+          console.log( 'loadedAll' );
+        }
+      });
+      BABYLON.SceneLoader.ImportMesh("", pathBox + "lionBoxV1.glb", "", scene, function (meshes) {
+        loadedBox[1] = meshes[0];
+        loadedBoxSkin[1] = meshes[1];
+        loadedBox[1].scaling.scaleInPlace(0.2);
+        loadedBoxSkin[1].isPickable = false;
+        loadedBoxSkin[1].isVisible = false;
+
+        console.log(loadedBox[1], loadedBoxSkin[1]);
+
+        loadedChk++;
+        if (loadedChk == 6) {
+          console.log( 'loadedAll' );
+        }
+      });
+      BABYLON.SceneLoader.ImportMesh("", pathBox + "deerBoxV1.glb", "", scene, function (meshes) {
+        loadedBox[2] = meshes[0];
+        loadedBoxSkin[2] = meshes[1];
+        loadedBox[2].scaling.scaleInPlace(0.2);
+        loadedBoxSkin[2].isPickable = false;
+        loadedBoxSkin[2].isVisible = false;
+
+        loadedChk++;
+        if (loadedChk == 6) {
+          console.log( 'loadedAll' );
+        }
+      });
+      BABYLON.SceneLoader.ImportMesh("", pathBox + "editCubeV1.glb", "", scene, function (meshes) {
+        loadedMenu[0] = meshes[0];
+        loadedMenuSkin[0] = meshes[1];
+        loadedMenu[0].scaling.scaleInPlace(0.2);
+        loadedMenuSkin[0].isVisible = false;
+
+        loadedChk++;
+        if (loadedChk == 6) {
+          console.log( 'loadedAll' );
+        }
+      });
+      BABYLON.SceneLoader.ImportMesh("", pathBox + "deleteCubeV1.glb", "", scene, function (meshes) {
+        loadedMenu[1] = meshes[0];
+        loadedMenuSkin[1] = meshes[1];
+        loadedMenu[1].scaling.scaleInPlace(0.2);
+        loadedMenuSkin[1].isVisible = false;
+
+        loadedChk++;
+        if (loadedChk == 6) {
+          console.log( 'loadedAll' );
+        }
+      });
+      BABYLON.SceneLoader.ImportMesh("", pathBox + "reloadCubeV1.glb", "", scene, function (meshes) {
+        loadedMenu[2] = meshes[0];
+        loadedMenuSkin[2] = meshes[1];
+        loadedMenu[2].scaling.scaleInPlace(0.2);
+        loadedMenuSkin[2].isVisible = false;
+
+        loadedChk++;
+        if (loadedChk == 6) {
+          console.log( 'loadedAll' );
+        }
+      });
+      BABYLON.SceneLoader.ImportMesh("", pathBox + "viewerCubeV1.glb", "", scene, function (meshes) {
+        loadedMenu[3] = meshes[0];
+        loadedMenuSkin[3] = meshes[1];
+        loadedMenu[3].scaling.scaleInPlace(0.2);
+        loadedMenuSkin[3].isVisible = false;
+
+        loadedChk++;
+        if (loadedChk == 6) {
+          console.log( 'loadedAll' );
+        }
+      });
+
+      //GUI
+      //function
+
+      function visibleTrue() {
+        for( i = 0; i < loadedBoxSkin.length; i++ ) {
+          loadedBoxSkin[i].isVisible = true;
+        }
+      }
+
+      function visibleFalse() {
+        for( i = 0; i < loadedBoxSkin.length; i++ ) {
+          loadedBoxSkin[i].isVisible = false;
+        }
+      }
+
+      function menuTrue() {
+        for( i = 0; i < loadedMenuSkin.length; i++ ) {
+          loadedMenuSkin[i].isVisible = true;
+        }
+      }
+
+      function menuFalse() {
+        for( i = 0; i < loadedMenuSkin.length; i++ ) {
+          loadedMenuSkin[i].isVisible = false;
+        }
+      }
+
+      function pickableTrue() {
+        for( i = 0; i < loadedBoxSkin.length; i++ ) {
+          loadedBoxSkin[i].isPickable = true;
+        }
+      }
+
+      function pickableFalse() {
+        for( i = 0; i < loadedBoxSkin.length; i++ ) {
+          loadedBoxSkin[i].isPickable = false;
+        }
+      }
+
+      function animalsTrue() {
+        for( i = 0; i < loadedSkin.length; i++ ) {
+          loadedSkin[i].isVisible = true;
+        }
+      }
+
+      function animalsFalse() {
+        for( i = 0; i < loadedSkin.length; i++ ) {
+          loadedSkin[i].isVisible = false;
+        }
+      }
+
+      function animalPickTrue() {
+        for( i = 0; i < loadedSkin.length; i++ ) {
+          loadedSkin[i].isPickable = true;
+        }
+      }
+
+      function animalPickFalse() {
+        for( i = 0; i < loadedSkin.length; i++ ) {
+          loadedSkin[i].isPickable = false;
+        }
+      }
+
+      function modeFalse() {
+        createMode = false;
+        viewerMode = false;
+        selectMode = false;
+        deleteMode = false;
+        editorMode = false;
+        clicked = false;
+      }
+      //function
+      //Call Model
+
+      BABYLON.SceneLoader.ImportMesh("", pathModel + "Tiger_Y_Clip_01_L.glb", "", scene, function (meshes) {
+        loadedModel[0] = meshes[0];
+        loadedSkin[0] = meshes[1];
+        loadedSkin[0].isPickable = false;
+        loadedSkin[0].isVisible = false;
+
+        // shadowGenerator.addShadowCaster(loadedModel, true);
+        loadedChk++;
+        if (loadedChk == 6) {
+          console.log( 'loadedAll' );
+        }
+      });
+
+      BABYLON.SceneLoader.ImportMesh("", pathModel + "Lion_M_Clip_01_L.glb", "", scene, function (meshes) {
+        loadedModel[1] = meshes[0];
+        loadedSkin[1] = meshes[1];
+        loadedSkin[1].isPickable = false;
+        loadedSkin[1].isVisible = false;
+        
+        // shadowGenerator.addShadowCaster(loadedModel, true);
+        loadedChk++;
+        if (loadedChk == 6) {
+          console.log( 'loadedAll' );
+        }
+      });
+
+      BABYLON.SceneLoader.ImportMesh("", pathModel + "RedDeer_M_Clip_01_L.glb", "", scene, function (meshes) {
+        loadedModel[2] = meshes[0];
+        loadedSkin[2] = meshes[1];
+        loadedSkin[2].isPickable = false;
+        loadedSkin[2].isVisible = false;
+        
+        // shadowGenerator.addShadowCaster(loadedModel, true);
+        loadedChk++;
+        if (loadedChk == 6) {
+          console.log( 'loadedAll' );
+        }
+      });
+
+      //Call Model
+
+      var xr = await scene.createDefaultXRExperienceAsync({
+        uiOptions: {
+          sessionMode: "immersive-ar",
+          referenceSpaceType: "local-floor"
+        },
+        optionalFeatures: true
+      });
+  
+      const fm = xr.baseExperience.featuresManager;
+  
+      const xrTest = fm.enableFeature(BABYLON.WebXRHitTest.Name, "latest");
+      const xrPlanes = fm.enableFeature(BABYLON.WebXRPlaneDetector.Name, "latest");
+  
+      const xrBackgroundRemover = fm.enableFeature(BABYLON.WebXRBackgroundRemover.Name);
+  
+      const marker = BABYLON.MeshBuilder.CreateTorus('marker', { diameter: 0.15, thickness: 0.05 });
+      marker.isVisible = false;
+      marker.rotationQuaternion = new BABYLON.Quaternion();
+  
+      let hitTest;
+  
+      xrTest.onHitTestResultObservable.add((results) => {
+        if (results.length && results[0].rotationQuaternion._x < 0.15 && results[0].rotationQuaternion._x > -0.15 && results[0].rotationQuaternion._z < 0.15 && results[0].rotationQuaternion._z > -0.15 ) {
+          hitTest = results[0];
+          hitTest.transformationMatrix.decompose(undefined, marker.rotationQuaternion, marker.position);
+          if ( !firstChk ) {
+            firstChk = true;
+            createMode = true;
+            setBtn = true;
+            clicked = false;
+          }
+          if( createMode ) {
+            marker.isVisible = true;
+            if ( setBtn ) {
+              for ( i = 0; i < loadedBox.length; i++ ) {
+                hitTest.transformationMatrix.decompose(undefined, loadedBox[i].rotationQuaternion, loadedBox[i].position);
+                loadedBox[i].position.y += 0.4 + 0.5 * i;
+                loadedBox[i].position.x -= 0.5;
+              }
+              for ( i = 0; i < loadedMenu.length; i++ ) {
+                hitTest.transformationMatrix.decompose(undefined, loadedMenu[i].rotationQuaternion, loadedMenu[i].position);
+                loadedMenu[i].position.y += 0.4 + 0.4 * i;
+                loadedMenu[i].position.x += 0.5;
+              }
+              if ( clicked ) {
+                visibleTrue();
+                menuTrue();
+                pickableTrue();
+                setBtn = false;
+                createMode = false;
+                marker.isVisible = false;
+                viewerMode = true;
+              }
+            } else if ( animalNum > -1 ) {
+              hitTest.transformationMatrix.decompose(undefined, loadedModel[animalNum].rotationQuaternion, loadedModel[animalNum].position);
+              if ( clicked ) {
+                loadedSkin[animalNum].isVisible = true;
+                animalNum = -1;
+                createMode = false;
+                marker.isVisible = false;
+                viewerMode = true;
+              }
+            }
+          }
+        } else {
+          marker.isVisible = false;
+          hitTest = undefined;
+        }
+      });
+
+      xr.baseExperience.onStateChangedObservable.add((state) => {
+        switch(state) {
+          case 2:
+            setBtn = false;
+            xrmode = true;
+            break;
+          case 3:
+            visibleFalse();
+            animalsFalse();
+            menuFalse();
+            modeFalse();
+            firstChk = false;
+            marker.isVisible = false;
+            xrmode = false;
+            break;
+        }
+      });
+      
+      scene.onPointerObservable.add( (pointerInfo) => {
+        if( createMode ) {
+          switch (pointerInfo.type) {
+            case BABYLON.PointerEventTypes.POINTERDOWN:
+              if ( pointerInfo.pickInfo.pickedMesh != null ) {
+                if( pointerInfo.pickInfo.pickedMesh.name == 'tigerCube' ) {
+                  modeFalse();
+                  animalPickFalse();
+                  createMode = true;
+                  animalNum = 0;
+                } else if( pointerInfo.pickInfo.pickedMesh.name == 'lionCube' ) {
+                  modeFalse();
+                  animalPickFalse();
+                  createMode = true;
+                  animalNum = 1;
+                } else if( pointerInfo.pickInfo.pickedMesh.name == 'deerCube' ) {
+                  modeFalse();
+                  animalPickFalse();
+                  createMode = true;
+                  animalNum = 2;
+                } else if( pointerInfo.pickInfo.pickedMesh.name == 'editCube' ) {
+                  modeFalse();
+                  animalPickTrue();
+                  selectMode = true;
+                  console.log('edit');
+                } else if( pointerInfo.pickInfo.pickedMesh.name == 'deleteCube' ) {
+                  modeFalse();
+                  animalPickTrue();
+                  deleteMode = true;
+                  console.log('del');
+                } else if( pointerInfo.pickInfo.pickedMesh.name == 'reloadCube' ) {
+                  modeFalse();
+                  animalsFalse();
+                  viewerMode = true;
+                  console.log('reload');
+                } else if( pointerInfo.pickInfo.pickedMesh.name == 'viewerCube' ) {
+                  modeFalse();
+                  animalPickFalse();
+                  viewerMode = true;
+                  console.log('just view');
+                } else if ( pointerInfo.pickInfo.pickedMesh.name == 'marker' ) {
+                  modeFalse();
+                  animalPickFalse();
+                  createMode = true;
+                  clicked = true;
+                }
+              }
+              break;
+            case BABYLON.PointerEventTypes.POINTERUP:
+              break;
+            case BABYLON.PointerEventTypes.POINTERMOVE:
+              break;
+          }
+        } else if ( selectMode ) {
+          switch (pointerInfo.type) {
+            case BABYLON.PointerEventTypes.POINTERDOWN:
+              if ( pointerInfo.pickInfo.pickedMesh != null ) {
+                if( pointerInfo.pickInfo.pickedMesh.name == 'tigerCube' ) {
+                  modeFalse();
+                  createMode = true;
+                  animalNum = 0;
+                } else if( pointerInfo.pickInfo.pickedMesh.name == 'lionCube' ) {
+                  modeFalse();
+                  createMode = true;
+                  animalNum = 1;
+                } else if( pointerInfo.pickInfo.pickedMesh.name == 'deerCube' ) {
+                  modeFalse();
+                  createMode = true;
+                  animalNum = 2;
+                } else if( pointerInfo.pickInfo.pickedMesh.name == 'editCube' ) {
+                  modeFalse();
+                  animalPickTrue();
+                  selectMode = true;
+                } else if( pointerInfo.pickInfo.pickedMesh.name == 'deleteCube' ) {
+                  modeFalse();
+                  deleteMode = true;
+                } else if( pointerInfo.pickInfo.pickedMesh.name == 'reloadCube' ) {
+                  modeFalse();
+                  animalsFalse();
+                  viewerMode = true;
+                } else if( pointerInfo.pickInfo.pickedMesh.name == 'viewerCube' ) {
+                  modeFalse();
+                  viewerMode = true;
+                } else if( pointerInfo.pickInfo.pickedMesh.name == 'Tiger_Y_LOD0') {
+                  modeFalse();
+                  animalPickFalse;
+                  currentMesh = loadedModel[0];
+                  loadedSkin[0].isPickable = true;
+                  editorMode = true;
+                } else if( pointerInfo.pickInfo.pickedMesh.name == 'Lion_M_LOD0') {
+                  modeFalse();
+                  animalPickFalse;
+                  currentMesh = loadedModel[1];
+                  loadedSkin[1].isPickable = true;
+                  editorMode = true;
+                } else if( pointerInfo.pickInfo.pickedMesh.name == 'RedDeer_M_LOD0') {
+                  modeFalse();
+                  animalPickFalse;
+                  currentMesh = loadedModel[2];
+                  loadedSkin[2].isPickable = true;
+                  editorMode = true;
+                }
+              }
+              break;
+          }
+        } else if ( editorMode ) {
+          switch (pointerInfo.type) {
+            case BABYLON.PointerEventTypes.POINTERDOWN:
+              if ( pointerInfo.pickInfo.pickedMesh != null ) {
+                if( pointerInfo.pickInfo.pickedMesh.name == 'tigerCube' ) {
+                  modeFalse();
+                  createMode = true;
+                  animalNum = 0;
+                } else if( pointerInfo.pickInfo.pickedMesh.name == 'lionCube' ) {
+                  modeFalse();
+                  createMode = true;
+                  animalNum = 1;
+                } else if( pointerInfo.pickInfo.pickedMesh.name == 'deerCube' ) {
+                  modeFalse();
+                  createMode = true;
+                  animalNum = 2;
+                } else if( pointerInfo.pickInfo.pickedMesh.name == 'editCube' ) {
+                  modeFalse();
+                  animalPickTrue();
+                  selectMode = true;
+                } else if( pointerInfo.pickInfo.pickedMesh.name == 'deleteCube' ) {
+                  modeFalse();
+                  deleteMode = true;
+                } else if( pointerInfo.pickInfo.pickedMesh.name == 'reloadCube' ) {
+                  modeFalse();
+                  animalsFalse();
+                  viewerMode = true;
+                } else if( pointerInfo.pickInfo.pickedMesh.name == 'viewerCube' ) {
+                  modeFalse();
+                  viewerMode = true;
+                }
+                if( pointerInfo.pickInfo.pickedMesh.name == 'Tiger_Y_LOD0' || pointerInfo.pickInfo.pickedMesh.name == 'Lion_M_LOD0' || pointerInfo.pickInfo.pickedMesh.name == 'RedDeer_M_LOD0') {
+                  rotateMove = true;
+                  currentMesh.isPickable = false;
+                } else {
+                  rotateMove = false;
+                }
+                if(pointerInfo.pickInfo.hit) {
+                  pointerDown(pointerInfo.pickInfo.pickedPoint);
+                  if( pointedNum == 2 ) {
+                    currentMesh.isPickable = false;
+                  }
+                }
+              }
+              break;
+          }
+        } else if ( deleteMode ) {
+          
+        } else if ( viewerMode ) {
+          switch (pointerInfo.type) {
+            case BABYLON.PointerEventTypes.POINTERDOWN:
+              if ( pointerInfo.pickInfo.pickedMesh != null ) {
+                if( pointerInfo.pickInfo.pickedMesh.name == 'tigerCube' ) {
+                  modeFalse();
+                  animalPickFalse();
+                  createMode = true;
+                  animalNum = 0;
+                } else if( pointerInfo.pickInfo.pickedMesh.name == 'lionCube' ) {
+                  modeFalse();
+                  animalPickFalse();
+                  createMode = true;
+                  animalNum = 1;
+                } else if( pointerInfo.pickInfo.pickedMesh.name == 'deerCube' ) {
+                  modeFalse();
+                  animalPickFalse();
+                  createMode = true;
+                  animalNum = 2;
+                } else if( pointerInfo.pickInfo.pickedMesh.name == 'editCube' ) {
+                  modeFalse();
+                  animalPickTrue();
+                  selectMode = true;
+                  console.log('edit');
+                } else if( pointerInfo.pickInfo.pickedMesh.name == 'deleteCube' ) {
+                  modeFalse();
+                  animalPickTrue();
+                  deleteMode = true;
+                  console.log('del');
+                } else if( pointerInfo.pickInfo.pickedMesh.name == 'reloadCube' ) {
+                  modeFalse();
+                  animalsFalse();
+                  viewerMode = true;
+                  console.log('reload');
+                } else if( pointerInfo.pickInfo.pickedMesh.name == 'viewerCube' ) {
+                  modeFalse();
+                  animalPickFalse();
+                  viewerMode = true;
+                  console.log('just view');
+                }
+              }
+              break;
+            case BABYLON.PointerEventTypes.POINTERUP:
+              break;
+            case BABYLON.PointerEventTypes.POINTERMOVE:
+              break;
+          }
+        } 
+      });
+
+  
+      const planes = [];
+  
+      xrPlanes.onPlaneAddedObservable.add(plane => {
+        plane.polygonDefinition.push(plane.polygonDefinition[0]);
+        var polygon_triangulation = new BABYLON.PolygonMeshBuilder("name", plane.polygonDefinition.map((p) => new BABYLON.Vector2(p.x, p.z)), scene);
+        var polygon = polygon_triangulation.build(false, 0.01);
+        plane.mesh = polygon; //BABYLON.TubeBuilder.CreateTube("tube", { path: plane.polygonDefinition, radius: 0.02, sideOrientation: BABYLON.Mesh.FRONTSIDE, updatable: true }, scene);
+        //}
+        planes[plane.id] = (plane.mesh);
+        const mat = new BABYLON.StandardMaterial("mat", scene);
+        mat.alpha = 0.5;
+        mat.diffuseColor = BABYLON.Color3.Random();
+        polygon.createNormals();
+        // polygon.receiveShadows = true;
+        plane.mesh.material = mat;
+
+        plane.mesh.rotationQuaternion = new BABYLON.Quaternion();
+        plane.transformationMatrix.decompose(plane.mesh.scaling, plane.mesh.rotationQuaternion, plane.mesh.position);
+      });
+  
+      xrPlanes.onPlaneUpdatedObservable.add(plane => {
+        let mat;
+        if (plane.mesh) {
+            mat = plane.mesh.material;
+            plane.mesh.dispose(false, false);
+        }
+        const some = plane.polygonDefinition.some(p => !p);
+        if (some) {
+            return;
+        }
+        plane.polygonDefinition.push(plane.polygonDefinition[0]);
+        var polygon_triangulation = new BABYLON.PolygonMeshBuilder("name", plane.polygonDefinition.map((p) => new BABYLON.Vector2(p.x, p.z)), scene);
+        var polygon = polygon_triangulation.build(false, 0.01);
+        polygon.createNormals();
+        plane.mesh = polygon;// BABYLON.TubeBuilder.CreateTube("tube", { path: plane.polygonDefinition, radius: 0.02, sideOrientation: BABYLON.Mesh.FRONTSIDE, updatable: true }, scene);
+        //}
+        planes[plane.id] = (plane.mesh);
+        plane.mesh.material = mat;
+        plane.mesh.rotationQuaternion = new BABYLON.Quaternion();
+        plane.transformationMatrix.decompose(plane.mesh.scaling, plane.mesh.rotationQuaternion, plane.mesh.position);
+        plane.mesh.receiveShadows = true;
+      })
+  
+      xrPlanes.onPlaneRemovedObservable.add(plane => {
+        if (plane && planes[plane.id]) {
+          planes[plane.id].dispose()
+        }
+      });
+  
+      xr.baseExperience.sessionManager.onXRSessionInit.add(() => {
+        planes.forEach(plane => plane.dispose());
+        while (planes.pop()) { };
+      });
+  
+  
+  
+      return scene;
+    
+    };
+  var engine;
+  try {
+    engine = createDefaultEngine();
+  } catch(e) {
+    console.log("the available createEngine function failed. Creating the default engine instead");
+    engine = createDefaultEngine();
+  }
+  if (!engine) throw 'engine should not be null.';
+  scene = createScene();;
+  scene.then(returnedScene => { sceneToRender = returnedScene; });
+  
+
+  engine.runRenderLoop(function () {
+    if (sceneToRender) {
+      sceneToRender.render();
+    }
+  });
+
+  // Resize
+  window.addEventListener("resize", function () {
+    engine.resize();
+  });
+  </script>
+</body>
+</html>

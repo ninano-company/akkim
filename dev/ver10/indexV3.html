@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <title>Babylon.js sample code</title>
+
+    <!-- Babylon.js -->
+    <script src="https://code.jquery.com/pep/0.4.2/pep.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.6.2/dat.gui.min.js"></script>
+    <script src="https://preview.babylonjs.com/ammo.js"></script>
+    <script src="https://preview.babylonjs.com/cannon.js"></script>
+    <script src="https://preview.babylonjs.com/Oimo.js"></script>
+    <script src="https://preview.babylonjs.com/earcut.min.js"></script>
+    <script src="https://preview.babylonjs.com/babylon.js"></script>
+    <script src="https://preview.babylonjs.com/materialsLibrary/babylonjs.materials.min.js"></script>
+    <script src="https://preview.babylonjs.com/proceduralTexturesLibrary/babylonjs.proceduralTextures.min.js"></script>
+    <script src="https://preview.babylonjs.com/postProcessesLibrary/babylonjs.postProcess.min.js"></script>
+    <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.js"></script>
+    <script src="https://preview.babylonjs.com/serializers/babylonjs.serializers.min.js"></script>
+    <script src="https://preview.babylonjs.com/gui/babylon.gui.min.js"></script>
+    <script src="https://preview.babylonjs.com/inspector/babylon.inspector.bundle.js"></script>
+
+    <style>
+      html, body {
+        overflow: hidden;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+
+      #renderCanvas {
+        width: 100%;
+        height: 100%;
+        touch-action: none;
+      }
+    </style>
+  </head>
+<body>
+  <canvas id="renderCanvas"></canvas>
+  <script>
+    var canvas = document.getElementById("renderCanvas");
+
+    var engine = null;
+    var scene = null;
+    var sceneToRender = null;
+
+    var createDefaultEngine = function() { return new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true }); };
+
+    //Set Variables
+
+    const pathF = '../../../../akkim/ardev/assets/models/';
+
+    let loadedChk = 0;
+    let firstChk = false;
+    let editorMode = false;
+    let reviseMode = false;
+    let selectMode = false;
+    let clicked = false;
+
+    var setBtn = false;
+    var animalNum = -1;
+    var loadedMesh = new Array();
+    var loadedModel = new Array();
+    var loadedSkin = new Array();
+
+    var createScene = async function () {
+    
+      // This creates a basic Babylon Scene object (non-mesh)
+      var scene = new BABYLON.Scene(engine);
+  
+      // This creates and positions a free camera (non-mesh)
+      var camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 0, -5), scene);
+  
+      // This targets the camera to scene origin
+      camera.setTarget(BABYLON.Vector3.Zero());
+  
+      // This attaches the camera to the canvas
+      // camera.attachControl(canvas, true);
+  
+      // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
+      var light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
+  
+      // Default intensity is 1. Let's dim the light a small amount
+      light.intensity = 0.7;
+  
+      var dirLight = new BABYLON.DirectionalLight('light', new BABYLON.Vector3(0, -1, -0.5), scene);
+      dirLight.position = new BABYLON.Vector3(0.1, 1, -0.1);
+
+      //2d GUI ----------------------------------
+      // var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+      // var grid = new BABYLON.GUI.Grid();
+      // advancedTexture.addControl(grid);
+
+      // grid.addRowDefinition(1);
+
+      // var panel = new BABYLON.GUI.StackPanel();
+      // panel.width = "450px";
+      // grid.addControl(panel, 0, 0);
+
+      // var text1 = new BABYLON.GUI.TextBlock();
+      // text1.text = "아기호랑이가 오고있어요 잠시만 기다려주세요!";
+      // text1.textWrapping = true;
+      // text1.verticalAlignment = 1;
+      // text1.color = "white";
+      // text1.width = "400px";
+      // text1.height = "250px";
+      // text1.fontSize = 35;
+      // panel.addControl(text1); 
+      //---------------------------------------------
+
+      //3d GUI ----------------------------------
+      var manager3 = new BABYLON.GUI.GUI3DManager(scene);
+      
+      var panel3 = new BABYLON.GUI.StackPanel3D();
+      panel3.margin = 0.05;
+
+      manager3.addControl(panel3);
+      panel3.position.y = 1;
+      panel3.position.z = -1.5;
+      
+      animals = new Array( '호랑이', '사자', '사슴' );
+      button = new Array();
+      btnText = new Array();
+
+      function visibleFalse() {
+        for (i = 0; i < animals.length; i++ ) {
+          button[i].isVisible = false;
+          btnText[i].isVisible = false;
+        }
+      }
+      function visibleTrue() {
+        for (i = 0; i < animals.length; i++ ) {
+          button[i].isVisible = true;
+          btnText[i].isVisible = true;
+        }
+      }
+      function animalsFalse() {
+        for (i = 0; i < loadedSkin.length; i++ ) {
+          loadedSkin[i].isVisible = false;
+        }
+      }
+
+      for (i = 0; i < 3; i++ ) {
+        button[i] = new BABYLON.GUI.HolographicButton( animals[i] );
+        panel3.addControl(button[i]);
+
+        btnText[i] = new BABYLON.GUI.TextBlock();
+        btnText[i].text = animals[i];
+        btnText[i].color = "white";
+        btnText[i].fontSize = 48;
+        button[i].content = btnText[i];
+
+      }
+      panel3.isVertical = true;
+
+      visibleFalse();
+
+      //3dButton ----------------------------------
+
+      //Call Model
+
+      BABYLON.SceneLoader.ImportMesh("", pathF + "Tiger_Y_Clip_01_L.glb", "", scene, function (meshes) {
+        loadedMesh[0] = meshes;
+        loadedModel[0] = meshes[0];
+        loadedSkin[0] = meshes[1];
+        loadedSkin[0].isPickable = false;
+        loadedSkin[0].isVisible = false;
+
+        // shadowGenerator.addShadowCaster(loadedModel, true);
+        loadedChk++;
+        if (loadedChk == 3) {
+          console.log( 'loadedAll' );
+        }
+
+      });
+
+      BABYLON.SceneLoader.ImportMesh("", pathF + "Lion_M_Clip_01_L.glb", "", scene, function (meshes) {
+        loadedMesh[1] = meshes;
+        loadedModel[1] = meshes[0];
+        loadedSkin[1] = meshes[1];
+        loadedSkin[1].isPickable = false;
+        loadedSkin[1].isVisible = false;
+        
+        // shadowGenerator.addShadowCaster(loadedModel, true);
+        loadedChk++;
+        if (loadedChk == 3) {
+          console.log( 'loadedAll' );
+        }
+
+      });
+
+      BABYLON.SceneLoader.ImportMesh("", pathF + "RedDeer_M_Clip_01_L.glb", "", scene, function (meshes) {
+        loadedMesh[2] = meshes;
+        loadedModel[2] = meshes[0];
+        loadedSkin[2] = meshes[1];
+        loadedSkin[2].isPickable = false;
+        loadedSkin[2].isVisible = false;
+        
+        // shadowGenerator.addShadowCaster(loadedModel, true);
+        loadedChk++;
+        if (loadedChk == 3) {
+          console.log( 'loadedAll' );
+        }
+      });
+
+      //Call Model
+
+  
+      var xr = await scene.createDefaultXRExperienceAsync({
+        uiOptions: {
+          sessionMode: "immersive-ar",
+          referenceSpaceType: "local-floor"
+        },
+        optionalFeatures: true
+      });
+  
+      const fm = xr.baseExperience.featuresManager;
+  
+      const xrTest = fm.enableFeature(BABYLON.WebXRHitTest.Name, "latest");
+      const xrPlanes = fm.enableFeature(BABYLON.WebXRPlaneDetector.Name, "latest");
+  
+      const xrBackgroundRemover = fm.enableFeature(BABYLON.WebXRBackgroundRemover.Name);
+  
+      const marker = BABYLON.MeshBuilder.CreateTorus('marker', { diameter: 0.15, thickness: 0.05 });
+      marker.isVisible = false;
+      marker.rotationQuaternion = new BABYLON.Quaternion();
+  
+      let hitTest;
+  
+      xrTest.onHitTestResultObservable.add((results) => {
+        if (results.length && results[0].rotationQuaternion._x < 0.15 && results[0].rotationQuaternion._x > -0.15 && results[0].rotationQuaternion._z < 0.15 && results[0].rotationQuaternion._z > -0.15 ) {
+          hitTest = results[0];
+          hitTest.transformationMatrix.decompose(undefined, marker.rotationQuaternion, marker.position);
+          if ( !firstChk ) {
+            firstChk = true;
+            editorMode = true;
+            setBtn = true;
+            clicked = false;
+          }
+          if( editorMode ) {
+            marker.isVisible = true;
+            if ( setBtn ) {
+              hitTest.transformationMatrix.decompose(undefined, panel3.rotationQuaternion, panel3.position);
+              if ( clicked ) {
+                visibleTrue();
+                setBtn = false;
+                editorMode = false;
+                marker.isVisible = false;
+              }
+            } else if ( animalNum > -1 ) {
+              // hitTest.transformationMatrix.decompose(undefined, loadedModel[animalNum].rotationQuaternion, loadedModel[animalNum].position);
+              console.log(loadedModel);
+              console.log(loadedSkin);
+              console.log(loadedSkin[animalNum]);
+              if ( clicked ) {
+                // loadedSkin[animalNum].isVisible = true;
+                animalNum = -1;
+                editorMode = false;
+                marker.isVisible = false;
+              }
+            }
+          }
+        } else {
+          marker.isVisible = false;
+          hitTest = undefined;
+        }
+      });
+
+      xr.baseExperience.onStateChangedObservable.add((state) => {
+        switch(state) {
+          case 2:
+            setBtn = false;
+            xrmode = true;
+            break;
+          case 3:
+            visibleFalse();
+            animalsFalse();
+            firstChk = false;
+            marker.isVisible = false;
+            xrmode = false;
+            break;
+        }
+      });
+      
+      function modelSelected() {
+
+      }
+
+      scene.onPointerObservable.add( (pointerInfo) => {
+        if( editorMode ) {
+          clicked = true;
+        } else if ( reviseMode ) {
+          switch ( pointerInfo.type ) {
+            case BABYLON.PointerEventTypes.POINTERDOWN:
+              // if( pointerInfo.pickInfo.pickedMesh == loadedSkin[0] && pointerInfo.pickInfo.pickedMesh == loadedSkin[1] && pointerInfo.pickInfo.pickedMesh == loadedSkin[2] ){
+              //   singleFinger = true;
+              //   loadedSkin.isPickable = false;
+              // } else {
+              //   singleFinger = false;
+              // }
+              // if(pointerInfo.pickInfo.hit) {
+              //   pointerDown(pointerInfo.pickInfo.pickedPoint);
+              //   if(pointedNum == 2 ) {
+              //     loadedSkin.isPickable = false;
+              //   }
+              //   if(doubleTapChk == true) {
+              //     doubleTap = true;
+              //   }
+              //   doubleTapChk = true;
+              //   setTimeout(function(){
+              //     doubleTapChk = false;
+              //   }, 300);
+              // }
+              break;
+            case BABYLON.PointerEventTypes.POINTERUP:
+              // pointerUp();
+              break;
+            case BABYLON.PointerEventTypes.POINTERMOVE:
+              // if( pointedNum == 1 && doubleTap == false ) {
+              //   if ( pointerInfo.pickInfo.hit ) {
+              //     pointerMove( pointerInfo.pickInfo.pickedPoint );
+              //   }
+              // } else if ( pointedNum == 2 ) {
+              //   if( dubbleFinger == false ) {
+              //     tap1 = pointerInfo.pickInfo.pickedPoint;
+              //     dubbleFinger = true;
+              //   } else {
+              //     tap2 = pointerInfo.pickInfo.pickedPoint;
+              //     dubbleFinger = false;
+              //   }
+              //   scaleControl( tap1, tap2 );
+              // }
+              break;
+          }
+        } else if ( selectMode ) {
+          switch ( pointerInfo.type ) {
+            case BABYLON.PointerEventTypes.POINTERUP:
+              console.log(pointerInfo.pickInfo);
+              // modelSelected(pointerInfo.pickInfo);
+              break;
+          }
+        }
+      });
+
+  
+      const planes = [];
+  
+      xrPlanes.onPlaneAddedObservable.add(plane => {
+        plane.polygonDefinition.push(plane.polygonDefinition[0]);
+        var polygon_triangulation = new BABYLON.PolygonMeshBuilder("name", plane.polygonDefinition.map((p) => new BABYLON.Vector2(p.x, p.z)), scene);
+        var polygon = polygon_triangulation.build(false, 0.01);
+        plane.mesh = polygon; //BABYLON.TubeBuilder.CreateTube("tube", { path: plane.polygonDefinition, radius: 0.02, sideOrientation: BABYLON.Mesh.FRONTSIDE, updatable: true }, scene);
+        //}
+        planes[plane.id] = (plane.mesh);
+        const mat = new BABYLON.StandardMaterial("mat", scene);
+        mat.alpha = 0.5;
+        mat.diffuseColor = BABYLON.Color3.Random();
+        polygon.createNormals();
+        // polygon.receiveShadows = true;
+        plane.mesh.material = mat;
+
+        plane.mesh.rotationQuaternion = new BABYLON.Quaternion();
+        plane.transformationMatrix.decompose(plane.mesh.scaling, plane.mesh.rotationQuaternion, plane.mesh.position);
+      });
+  
+      xrPlanes.onPlaneUpdatedObservable.add(plane => {
+        let mat;
+        if (plane.mesh) {
+            mat = plane.mesh.material;
+            plane.mesh.dispose(false, false);
+        }
+        const some = plane.polygonDefinition.some(p => !p);
+        if (some) {
+            return;
+        }
+        plane.polygonDefinition.push(plane.polygonDefinition[0]);
+        var polygon_triangulation = new BABYLON.PolygonMeshBuilder("name", plane.polygonDefinition.map((p) => new BABYLON.Vector2(p.x, p.z)), scene);
+        var polygon = polygon_triangulation.build(false, 0.01);
+        polygon.createNormals();
+        plane.mesh = polygon;// BABYLON.TubeBuilder.CreateTube("tube", { path: plane.polygonDefinition, radius: 0.02, sideOrientation: BABYLON.Mesh.FRONTSIDE, updatable: true }, scene);
+        //}
+        planes[plane.id] = (plane.mesh);
+        plane.mesh.material = mat;
+        plane.mesh.rotationQuaternion = new BABYLON.Quaternion();
+        plane.transformationMatrix.decompose(plane.mesh.scaling, plane.mesh.rotationQuaternion, plane.mesh.position);
+        plane.mesh.receiveShadows = true;
+      })
+  
+      xrPlanes.onPlaneRemovedObservable.add(plane => {
+        if (plane && planes[plane.id]) {
+          planes[plane.id].dispose()
+        }
+      });
+  
+      xr.baseExperience.sessionManager.onXRSessionInit.add(() => {
+        planes.forEach(plane => plane.dispose());
+        while (planes.pop()) { };
+      });
+  
+  
+  
+      return scene;
+    
+    };
+  var engine;
+  try {
+    engine = createDefaultEngine();
+  } catch(e) {
+    console.log("the available createEngine function failed. Creating the default engine instead");
+    engine = createDefaultEngine();
+  }
+  if (!engine) throw 'engine should not be null.';
+  scene = createScene();;
+  scene.then(returnedScene => { sceneToRender = returnedScene; });
+  
+
+  engine.runRenderLoop(function () {
+    if (sceneToRender) {
+      sceneToRender.render();
+    }
+  });
+
+  // Resize
+  window.addEventListener("resize", function () {
+    engine.resize();
+  });
+  </script>
+</body>
+</html>

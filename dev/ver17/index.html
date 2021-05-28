@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <title>Babylon.js sample code</title>
+
+    <!-- Babylon.js -->
+    <script src="https://code.jquery.com/pep/0.4.2/pep.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.6.2/dat.gui.min.js"></script>
+    <script src="https://preview.babylonjs.com/ammo.js"></script>
+    <script src="https://preview.babylonjs.com/cannon.js"></script>
+    <script src="https://preview.babylonjs.com/Oimo.js"></script>
+    <script src="https://preview.babylonjs.com/earcut.min.js"></script>
+    <script src="../../assets/dist/babylon.js"></script>
+    <script src="https://preview.babylonjs.com/materialsLibrary/babylonjs.materials.min.js"></script>
+    <script src="https://preview.babylonjs.com/proceduralTexturesLibrary/babylonjs.proceduralTextures.min.js"></script>
+    <script src="https://preview.babylonjs.com/postProcessesLibrary/babylonjs.postProcess.min.js"></script>
+    <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.js"></script>
+    <script src="https://preview.babylonjs.com/serializers/babylonjs.serializers.min.js"></script>
+    <script src="https://preview.babylonjs.com/gui/babylon.gui.min.js"></script>
+    <script src="https://preview.babylonjs.com/inspector/babylon.inspector.bundle.js"></script>
+
+    <style>
+      html, body {
+        overflow: hidden;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+
+      #renderCanvas {
+        width: 100%;
+        height: 100%;
+        touch-action: none;
+      }
+
+      #loading {
+        z-index: 12;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(180deg, #3854A9, #22B573);
+      }
+
+      .loading {
+        width: 100%;
+      }
+      .logoU {
+        transform: translateX(-7%);
+      }
+      .bottom {
+        position: fixed;
+        width: 100%;
+        bottom: 3%;
+      }
+      .progress {
+        position: fixed;
+        width: 0%;
+        bottom: 19%;
+        height: 30px;
+        background-color: #fff;
+      }
+
+      #UI {
+        z-index: 12;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(180deg, #3854A9, #22B573);
+        display: none;
+        grid-template-columns: 1fr;
+        grid-template-rows: 2.8fr 1fr 1fr 1fr 1fr 1fr 0.7fr;
+      }
+      .logoContainer {
+        text-align: center;
+      }
+      .logo {
+        width: 30%;
+      }
+      .btnContainer {
+        text-align: center;
+      }
+      .btn {
+        width: 70%;
+      }
+      #scenario {
+        display: none;
+      }
+
+
+    </style>
+  </head>
+<body>
+  <canvas id="renderCanvas"></canvas>
+  <div id="loading">
+    <div class="btnContainer">
+      <img class="loading" src="../../../akkim/ardev/assets/GUI/images/ulsanbukgu/loading.png" alt="">
+    </div>
+    <div class="progress">
+    </div>
+    <div class="btnContainer bottom">
+      <img class="logoU" src="../../../akkim/ardev/assets/GUI/images/ulsanbukgu/logoU.png" alt="">
+    </div>
+  </div>
+  <div id="UI">
+    <div class="logoContainer">
+      <img class="logo" src="../../../akkim/ardev/assets/GUI/images/ulsanbukgu/logo.png" alt="">
+    </div>
+    <div class="btnContainer">
+      <img class="btn mapBtn" src="../../../akkim/ardev/assets/GUI/images/ulsanbukgu/map.png" alt="">
+    </div>
+    <div class="btnContainer">
+      <img class="btn cheongBtn" src="../../../akkim/ardev/assets/GUI/images/ulsanbukgu/cheong.png" alt="">
+    </div>
+    <div class="btnContainer">
+      <img class="btn dongdaesanBtn" src="../../../akkim/ardev/assets/GUI/images/ulsanbukgu/dongdaesan.png" alt="">
+    </div>
+    <div class="btnContainer">
+      <img class="btn muryongsanBtn" src="../../../akkim/ardev/assets/GUI/images/ulsanbukgu/muryongsan.png" alt="">
+    </div>
+    <div class="btnContainer">
+      <img class="btn saranggilBtn" src="../../../akkim/ardev/assets/GUI/images/ulsanbukgu/saranggil.png" alt="">
+    </div>
+    <div> </div>
+  </div>
+  <audio id="scenario" src="../../../akkim/ardev/assets/sounds/scenario/scenarioAudio.m4a"></audio>
+
+  <script>
+    var canvas = document.getElementById("renderCanvas");
+    var UI = document.getElementById('UI');
+    var mapBtn = document.querySelector('.mapBtn');
+    var cheongBtn = document.querySelector('.cheongBtn');
+    var muryongsanBtn = document.querySelector('.muryongsanBtn');
+    var dongdaesanBtn = document.querySelector('.dongdaesanBtn');
+    var saranggilBtn = document.querySelector('.saranggilBtn');
+    var scenario = document.querySelector('#scenario');
+    var progress = document.querySelector('.progress');
+    var timer = 0;
+
+    setInterval( function () {
+      if ( timer < 100 ) {
+        timer = timer + 1;
+        progress.style.width = timer + '%';
+      }
+    }, 500)
+
+    mute = () => {
+      scenario.volume = 0;
+    }
+
+    sound = () => {
+      scenario.volume = 1;
+    }
+
+    sceStop = () => {
+      scenario.pause();
+      scenario.currentTime = 0;
+    }
+
+    scePlay = () => {
+      scenario.play();
+    }
+    
+    sound();
+    sceStop();
+    scenario.loop = false;
+
+    let loaded = () => {
+      UI.style.display = 'grid';
+    }
+
+
+
+    var engine = null;
+    var scene = null;
+    var sceneToRender = null;
+
+    var createDefaultEngine = function() { return new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true }); };
+
+    //set Variables
+
+    const pathModel = '../../../../akkim/ardev/assets/models/';
+    const pathflower = '../../../../akkim/ardev/assets/models/flower/';
+    const pathPanel = '../../../../akkim/ardev/assets/GUI/';
+    const flowerNum = 0;
+    const Msg0 = '';
+    const Msg1 = '';
+    // const Msg1 = '울산 북구청 지도가 만들어졌대요! 다같이 함께 떠나요!';
+    const Msg2 = '지도가 나타날 수 있도록 바닥을 동글동글 비춰주세요!';
+
+    let intensityValue = 3;
+    let model = new Array( 'ulsanbukgu/UlsanNorthMapPlane.glb', 'ulsanbukgu/explain.glb' );
+    let modelscale = new Array( 0.5, 1 );
+    let loadedModelNumber = model.length;
+    let pose = new Array( 0, 0, 0 );
+    // let flowerA = new Array( 'flower1.glb', 'flower2.glb', 'flower3.glb', 'flower4.glb' );
+    let matAlpha = 0.3;
+
+    let loadedChk = 0;
+    let firstChk = false;
+    let clicked = false;
+    let onetime1 = false;
+    let onetime2 = false;
+    let triggered = false;
+    let selectedBtn = '';
+
+    let currentMesh = null;
+    let currentSkin = null;
+    let currentPlate = null;
+    
+    let rotateMove = false;
+    let pointedNum = 0;
+    let dubbleFinger = false;
+    let tap1 = null;
+    let tap2 = null;
+    let startingPoint = null;
+    let startingScale = null;
+    let startingRotation = null;
+
+    var loadedModel = new Array();
+    var loadedSkin = new Array();
+    var loadedFlower = new Array();
+    var loadedFlowerS = new Array();
+    var flower = new Array();
+    var plate = new Array();
+    var dirLight = new Array();
+    var loadedPanel = new Array();
+    var loadedPanelS = new Array();
+    var loadedFn = new Array();
+
+    //--------------
+
+    var createScene = async function () {
+    
+      // This creates a basic Babylon Scene object (non-mesh)
+      var scene = new BABYLON.Scene(engine);
+  
+      // This creates and positions a free camera (non-mesh)
+      var camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 0, -5), scene);
+  
+      // This targets the camera to scene origin
+      camera.setTarget(BABYLON.Vector3.Zero());
+  
+      // This attaches the camera to the canvas
+      // camera.attachControl(canvas, true);
+  
+      // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
+      var light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
+      // Default intensity is 1. Let's dim the light a small amount
+      light.intensity = intensityValue;
+  
+      var groundMaterial = new BABYLON.StandardMaterial("ground", scene);
+      groundMaterial.specularColor = BABYLON.Color3.Black();
+      groundMaterial.alpha = 0;
+      var ground = BABYLON.MeshBuilder.CreateGround("ground", {width:10, height:10}, scene, false);
+      ground.material = groundMaterial;
+      ground.isVisible = false;
+      ground.isPickable = false;
+
+      var whiteMat = new BABYLON.StandardMaterial("whiteMat", scene);
+      whiteMat.diffuseColor = new BABYLON.Color3(1, 1, 1);
+      whiteMat.alpha = matAlpha;
+
+      // Text
+      
+      var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+      var grid = new BABYLON.GUI.Grid();
+      advancedTexture.addControl(grid);
+
+      grid.addRowDefinition(1);
+
+      var panel = new BABYLON.GUI.StackPanel();
+      panel.width = "800px";
+      grid.addControl(panel, 0, 0);
+
+      var button2 = BABYLON.GUI.Button.CreateSimpleButton("Starting", Msg0);
+      button2.width = "800px";
+      button2.height = "300px";
+      button2.color = "rgba(25,25,25,0)";
+      button2.background = "rgba(25,25,25,0)";
+      button2.textBlock.color = 'rgba(3, 3, 3, 1)';
+      button2.textBlock.textWrapping = true;
+      // button2.textBlock.fontFamily = 'Nanum Gothic';
+      button2.fontSize = 55;
+      panel.addControl(button2); 
+
+      var text2 = new BABYLON.GUI.TextBlock();
+      text2.text = '';
+      text2.textWrapping = true;
+      text2.textVerticalAlignment = 2;
+      text2.color = "white";
+      text2.width = "400px";
+      text2.height = "500px";
+      panel.addControl(text2); 
+
+      // Text
+
+      //function
+
+      function skinTrue() {
+        for( i = 0; i < loadedSkin.length; i++ ) {
+          for ( j = 0; j < loadedSkin[i].length; j++ ) {
+            loadedSkin[i][j].isVisible = true;
+          }
+        }
+      }
+
+      function skinFalse() {
+        for( i = 0; i < loadedSkin.length; i++ ) {
+          for ( j = 0; j < loadedSkin[i].length; j++ ) {
+            loadedSkin[i][j].isVisible = false;
+          }
+        }
+      }
+
+      function pickTrue() {
+        for( i = 0; i < loadedSkin.length; i++ ) {
+          loadedSkin[i][0].isPickable = true;
+        }
+      }
+
+      function pickFalse() {
+        for( i = 0; i < loadedSkin.length; i++ ) {
+          for ( j = 0; j < loadedSkin[i].length; j++ ) {
+            loadedSkin[i][j].isPickable = false;
+          }
+        }
+      }
+
+      function modelVisibleTrue( num ) {
+        for( i = 0; i < loadedSkin[num].length; i++ ) {
+          loadedSkin[num][i].isVisible = true;
+        }
+        plate[num].isVisible = true;
+        console.log('true');
+      }
+
+      function modelVisibleFalse( num ) {
+        for( i = 0; i < loadedSkin[num].length; i++ ) {
+          loadedSkin[num][i].isVisible = false;
+        }
+        plate[num].isVisible = false;
+      }
+
+      plateSTrue = ( num ) => {
+        plate[num].isVisible = true;
+      }
+
+      plateSFalse = ( num ) => {
+        plate[num].isVisible = false;
+      }
+
+      panelVisibleTrue = ( num ) => {
+        for ( i = 0; i < loadedPanelS.length; i++ ) {
+          loadedPanelS[i].isVisible = false;
+        }
+        loadedPanelS[num].isVisible = true;
+      }
+
+      characterVisibleFalse = () => {
+        for ( i = 0; i < loadedSkin[1].length; i++ ) {
+          loadedSkin[1][i].isVisible = false;
+        }
+      }
+
+      characterFalse = () => {
+        for ( i = 0; i < loadedPanelS.length; i++ ) {
+          loadedPanelS[i].isVisible = false;
+        }
+        for ( i = 0; i < loadedSkin[1].length; i++ ) {
+          loadedSkin[1].isVisible = false;
+        }
+        for ( i = 0; i < loadedFn.length; i++ ) {
+          loadedFn[i].isVisible = false;
+        }
+      }
+
+      function plateTrue() {
+        for( i = 0; i < plate.length; i++ ) {
+          plate[i].isVisible = true;
+        }
+      }
+
+      function plateFalse() {
+        for( i = 0; i < plate.length; i++ ) {
+          plate[i].isVisible = false;
+        }
+      }
+
+      function platePickTrue() {
+        for( i = 0; i < plate.length; i++ ) {
+          plate[i].isPickable = true;
+        }
+      }
+
+      function platePickFalse() {
+        for( i = 0; i < plate.length; i++ ) {
+          plate[i].isPickable = false;
+        }
+      }
+
+      function textClose() {
+        button2.textBlock.text = '';
+      }
+
+      //function
+      //Call Model
+
+      BABYLON.SceneLoader.ImportMesh("", pathModel + model[0], "", scene, function (meshes) {
+        loadedModel[0] = meshes[0];
+        var arr = new Array();
+        for( i = 1; i < meshes.length; i++ ){
+          arr.push(meshes[i]);
+          meshes[i].isVisible = false;
+          meshes[i].ivPickable = false;
+        }
+        loadedSkin[0] = arr;
+        meshes[0].scaling.scaleInPlace(modelscale[0]);
+
+        loadedChk++;
+        if ( timer < 70 ) {
+          timer = 70;
+        }
+        // all loaded
+        if (loadedChk == loadedModelNumber) {
+          timer = 100;
+          loaded();
+          console.log(scene);
+          scene.animationGroups[1].pause();
+          scene.animationGroups[1].onAnimationLoopObservable.add( function () {
+            scene.animationGroups[1].goToFrame(2.56);
+          });
+        }
+
+        // plate
+        plate[0] = BABYLON.MeshBuilder.CreateCylinder("plate0", {diameterTop:2, diameterBottom:2, height: 0.001, tessellation: 96}, scene);
+        plate[0].material = whiteMat;
+        plate[0].isVisible = false;
+        plate[0].isPickable = false;
+      });
+
+      BABYLON.SceneLoader.ImportMesh("", pathModel + model[1], "", scene, function (meshes) {
+        loadedModel[1] = meshes[0];
+        var arr = new Array();
+        for( i = 1; i < 15; i++ ){
+          arr.push(meshes[i]);
+          meshes[i].isVisible = false;
+          meshes[i].ivPickable = false;
+        }
+        loadedSkin[1] = arr;
+        meshes[0].scaling.scaleInPlace(modelscale[1]);
+        for ( i = 0; i < 4; i++ ) {
+          loadedPanelS[i] = meshes[ 15 + i ];
+        }
+        for ( i = 0; i < 3; i++ ) {
+          loadedFn[i] = meshes[ 19 + i ];
+        }
+
+        loadedChk++;
+        if ( timer < 70 ) {
+          timer = 70;
+        }
+        // all loaded
+        if (loadedChk == loadedModelNumber) {
+          timer = 100;
+          loaded();
+          console.log(scene);
+          scene.animationGroups[1].pause();
+          scene.animationGroups[1].onAnimationLoopObservable.add( function () {
+            scene.animationGroups[1].goToFrame(2.56);
+          });
+        }
+
+        // plate
+        plate[1] = BABYLON.MeshBuilder.CreateCylinder("plate1", {diameterTop:0.85, diameterBottom:0.85, height: 0.001, tessellation: 96}, scene);
+        plate[1].material = whiteMat;
+        plate[1].isVisible = false;
+        plate[1].isPickable = false;
+      });
+
+      var xr = await scene.createDefaultXRExperienceAsync({
+        uiOptions: {
+          sessionMode: "immersive-ar",
+          referenceSpaceType: "local-floor"
+        },
+        optionalFeatures: true
+      });
+
+      const fm = xr.baseExperience.featuresManager;
+  
+      const xrTest = fm.enableFeature(BABYLON.WebXRHitTest.Name, "latest");
+      const xrPlanes = fm.enableFeature(BABYLON.WebXRPlaneDetector.Name, "latest");
+      
+      let hitTest;
+  
+      xrTest.onHitTestResultObservable.add((results) => {
+        if (results.length && results[0].rotationQuaternion._x < 0.15 && results[0].rotationQuaternion._x > -0.15 && results[0].rotationQuaternion._z < 0.15 && results[0].rotationQuaternion._z > -0.15 ) {
+          hitTest = results[0];
+          if ( !firstChk ) {
+            for ( i = 0; i < loadedModel.length; i++ ) {
+              hitTest.transformationMatrix.decompose(undefined, loadedModel[i].rotationQuaternion, loadedModel[i].position);
+              hitTest.transformationMatrix.decompose(undefined, plate[i].rotationQuaternion, plate[i].position);
+            }
+            for ( i = 0; i < loadedPanel.length; i++ ) {
+              hitTest.transformationMatrix.decompose(undefined, loadedPanel[i].rotationQuaternion, loadedPanel[i].position);
+            }
+            hitTest.transformationMatrix.decompose(undefined, ground.rotationQuaternion, ground.position);
+            ground.isPickable = true;
+            ground.isVisible = true;
+            
+            skinFalse();
+            characterFalse();
+            pickFalse();
+            plateFalse();
+            platePickTrue();
+            if ( selectedBtn == 'map' ) { 
+              modelVisibleTrue( 0 );
+              plateSTrue( 0 );
+            } else { 
+              modelVisibleTrue( 1 );
+              plateSTrue( 1 );
+              sceStop();
+              scene.animationGroups[1].play(true);
+              if ( selectedBtn == 'cheong' ) {
+                panelVisibleTrue(0);
+                sound();
+                scePlay();
+                loadedFn[0].isVisible = true;
+                loadedFn[2].isVisible = true;
+              } else if ( selectedBtn == 'dongdaesan' ) {
+                panelVisibleTrue(1);
+              } else if ( selectedBtn == 'muryongsan' ) {
+                panelVisibleTrue(2);
+              } else if ( selectedBtn == 'saranggil' ) {
+                panelVisibleTrue(3);
+              }
+              // loadedModel[1].position.x -= 1;
+            }
+            for ( i = 0; i < plate.length; i++ ) {
+              if ( i > loadedModel.length ) {
+                plate[i].position.x = loadedModel[i].position.x;
+                plate[i].position.y = ground.position.y;
+                plate[i].position.z = loadedModel[i].position.z;
+              }
+            }
+            firstChk = true;
+            textClose();
+          }
+        } else {
+          hitTest = undefined;
+        }
+      });
+
+      xr.baseExperience.onStateChangedObservable.add((state) => {
+        switch(state) {
+          case 2:
+            setBtn = false;
+            xrmode = true;
+            ground.isVisible = false;
+            button2.textBlock.text = Msg2;
+            button2.textBlock.color = 'rgba(255, 255, 255, 1)';
+            break;
+          case 3:
+            skinFalse();
+            plateFalse();
+            sceStop();
+            scene.animationGroups[1].pause();
+            // flowerFalse();
+            // particleSystem.stop();
+            
+            firstChk = false;
+            ground.isVisible = false;
+            xrmode = false;
+            button2.textBlock.text = Msg1;
+            button2.textBlock.color = 'rgba(3, 3, 3, 1)';
+            break;
+        }
+      });
+
+      var pointerDown = function () {
+        pointedNum++;
+      }
+
+      var pointerUp = function () {
+        pointedNum = 0;
+        tap1 = null;
+        tap2 = null;
+        startingScale = null;
+        startingRotation = null;
+        rotateMove = false;
+        pickFalse();
+        platePickTrue();
+        if (startingPoint) {
+          startingPoint = null;
+          return;
+        }
+      }
+
+      var pointerMove = function ( point ) {
+        if (!startingPoint) {
+          startingPoint = point;
+          return;
+        }
+        var current = point;
+        current._y = 0;
+        if (!current) {
+          return;
+        }
+        if (!currentMesh){
+          return;
+        }
+        if (!currentPlate){
+          return;
+        }
+        if( rotateMove == true ) {
+          var diff = current.subtract(startingPoint);
+          currentMesh.position.addInPlace(diff);
+          currentMesh.position.y = ground.position.y;
+          currentPlate.position.addInPlace(diff);
+          currentPlate.position.y = ground.position.y;
+          startingPoint = current;
+        } else {
+          var vec1 = currentPlate.position.subtract(startingPoint);
+          var vec2 = currentPlate.position.subtract(current);
+          var thetaA = Math.atan2(vec1.z, vec1.x);
+          var thetaB = Math.atan2(vec2.z, vec2.x);
+          var diff = thetaA - thetaB;
+          currentMesh.addRotation( 0, diff, 0 );
+          startingPoint = current;
+        }
+      }
+
+      var scaleControl = function ( pointer1, pointer2 ) {
+        if (!currentMesh){
+          return;
+        }
+        if (!currentPlate){
+          return;
+        }
+
+        if( pointer1 != null && pointer2 != null ) {
+          var diff = pointer1.subtract(pointer2);
+          var current = diff._x*diff._x + diff._z*diff._z;
+          var scale = 0;
+          if ( startingScale == null ) {
+            startingScale = current;
+          } else {
+            scale = ( current - startingScale ) * 0.04 + 1;
+            currentMesh.scaling.scaleInPlace(scale);
+            currentPlate.scaling.scaleInPlace(scale);
+            startingScale = current;
+          }
+        }
+      }
+      
+      scene.onPointerObservable.add( (pointerInfo) => {
+        switch (pointerInfo.type) {
+          case BABYLON.PointerEventTypes.POINTERDOWN:
+            if ( pointerInfo.pickInfo.pickedMesh != null ) {
+              if( pointerInfo.pickInfo.pickedMesh == loadedFn[0] ) {
+                mute();
+                loadedFn[0].isVisible = false;
+                loadedFn[1].isVisible = true;
+              } else if ( pointerInfo.pickInfo.pickedMesh == loadedFn[1] ) {
+                sound();
+                loadedFn[1].isVisible = false;
+                loadedFn[0].isVisible = true;
+              } else if ( pointerInfo.pickInfo.pickedMesh == loadedFn[2] ) {
+                xr.baseExperience.exitXRAsync();
+              }
+              if( pointerInfo.pickInfo.pickedMesh.name == plate[0].name || pointerInfo.pickInfo.pickedMesh.name == plate[1].name ) {
+                if( pointerInfo.pickInfo.pickedMesh.name == plate[0].name ) {
+                  currentMesh = loadedModel[0];
+                  currentPlate = plate[0];
+                } else if ( pointerInfo.pickInfo.pickedMesh.name == plate[1].name ) {
+                  currentMesh = loadedModel[1];
+                  currentPlate = plate[1];
+                } else if ( pointerInfo.pickInfo.pickedMesh.name == plate[2].name ) {
+                  currentMesh = loadedModel[2];
+                  currentPlate = plate[2];
+                }
+                rotateMove = true;
+                platePickFalse();
+              } else {
+                rotateMove = false;
+              }
+              if(pointerInfo.pickInfo.hit) {
+                pointerDown();
+                if( pointedNum == 2 ) {
+                  platePickFalse();
+                }
+              }
+            }
+            break;
+          case BABYLON.PointerEventTypes.POINTERUP:
+            pointerUp();
+            break;
+          case BABYLON.PointerEventTypes.POINTERMOVE:
+            if( pointedNum == 1 ) {
+              if ( pointerInfo.pickInfo.hit ) {
+                pointerMove( pointerInfo.pickInfo.pickedPoint );
+              }
+            } else if ( pointedNum == 2 ) {
+              if ( dubbleFinger == false ) {
+                tap1 = pointerInfo.pickInfo.pickedPoint;
+                dubbleFinger = true;
+              } else {
+                tap2 = pointerInfo.pickInfo.pickedPoint;
+                dubbleFinger = false;
+              }
+              scaleControl( tap1, tap2 );
+            }
+            break;
+        }
+      });
+
+      mapBtn.addEventListener('click', function() {
+        selectedBtn = 'map';
+        xr.baseExperience.enterXRAsync("immersive-ar", "local-floor");
+      })
+      cheongBtn.addEventListener('click', function() {
+        selectedBtn = 'cheong';
+        xr.baseExperience.enterXRAsync("immersive-ar", "local-floor");
+      })
+      muryongsanBtn.addEventListener('click', function() {
+        selectedBtn = 'muryongsan';
+        xr.baseExperience.enterXRAsync("immersive-ar", "local-floor");
+      })
+      dongdaesanBtn.addEventListener('click', function() {
+        selectedBtn = 'dongdaesan';
+        xr.baseExperience.enterXRAsync("immersive-ar", "local-floor");
+      })
+      saranggilBtn.addEventListener('click', function() {
+        selectedBtn = 'saranggil';
+        xr.baseExperience.enterXRAsync("immersive-ar", "local-floor");
+      })
+      scenario.addEventListener('ended', function() {
+        characterVisibleFalse();
+      })
+  
+      const planes = [];
+  
+      xrPlanes.onPlaneAddedObservable.add(plane => {
+        plane.polygonDefinition.push(plane.polygonDefinition[0]);
+        var polygon_triangulation = new BABYLON.PolygonMeshBuilder("name", plane.polygonDefinition.map((p) => new BABYLON.Vector2(p.x, p.z)), scene);
+        var polygon = polygon_triangulation.build(false, 0.01);
+        plane.mesh = polygon; //BABYLON.TubeBuilder.CreateTube("tube", { path: plane.polygonDefinition, radius: 0.02, sideOrientation: BABYLON.Mesh.FRONTSIDE, updatable: true }, scene);
+        //}
+        planes[plane.id] = (plane.mesh);
+        const mat = new BABYLON.StandardMaterial("mat", scene);
+        mat.alpha = 0.5;
+        mat.diffuseColor = BABYLON.Color3.Random();
+        polygon.createNormals();
+        plane.mesh.material = mat;
+
+        plane.mesh.rotationQuaternion = new BABYLON.Quaternion();
+        plane.transformationMatrix.decompose(plane.mesh.scaling, plane.mesh.rotationQuaternion, plane.mesh.position);
+      });
+  
+      xrPlanes.onPlaneUpdatedObservable.add(plane => {
+        let mat;
+        if (plane.mesh) {
+            mat = plane.mesh.material;
+            plane.mesh.dispose(false, false);
+        }
+        const some = plane.polygonDefinition.some(p => !p);
+        if (some) {
+            return;
+        }
+        plane.polygonDefinition.push(plane.polygonDefinition[0]);
+        var polygon_triangulation = new BABYLON.PolygonMeshBuilder("name", plane.polygonDefinition.map((p) => new BABYLON.Vector2(p.x, p.z)), scene);
+        var polygon = polygon_triangulation.build(false, 0.01);
+        polygon.createNormals();
+        plane.mesh = polygon;
+        planes[plane.id] = (plane.mesh);
+        plane.mesh.material = mat;
+        plane.mesh.rotationQuaternion = new BABYLON.Quaternion();
+        plane.transformationMatrix.decompose(plane.mesh.scaling, plane.mesh.rotationQuaternion, plane.mesh.position);
+        plane.mesh.receiveShadows = true;
+      })
+  
+      xrPlanes.onPlaneRemovedObservable.add(plane => {
+        if (plane && planes[plane.id]) {
+          planes[plane.id].dispose()
+        }
+      });
+  
+      xr.baseExperience.sessionManager.onXRSessionInit.add(() => {
+        planes.forEach(plane => plane.dispose());
+        while (planes.pop()) { };
+      });
+  
+  
+  
+      return scene;
+    
+    };
+  var engine;
+  try {
+    engine = createDefaultEngine();
+  } catch(e) {
+    engine = createDefaultEngine();
+  }
+  if (!engine) throw 'engine should not be null.';
+  scene = createScene();;
+  scene.then(returnedScene => { sceneToRender = returnedScene; });
+  
+
+  engine.runRenderLoop(function () {
+    if (sceneToRender) {
+      sceneToRender.render();
+    }
+  });
+
+  // Resize
+  window.addEventListener("resize", function () {
+    engine.resize();
+  });
+  </script>
+</body>
+</html>

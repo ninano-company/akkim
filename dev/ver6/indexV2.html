@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+        <title>Babylon.js sample code</title>
+
+        <!-- Babylon.js -->
+        <script src="https://code.jquery.com/pep/0.4.2/pep.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.6.2/dat.gui.min.js"></script>
+        <script src="https://preview.babylonjs.com/ammo.js"></script>
+        <script src="https://preview.babylonjs.com/cannon.js"></script>
+        <script src="https://preview.babylonjs.com/Oimo.js"></script>
+        <script src="https://preview.babylonjs.com/earcut.min.js"></script>
+        <script src="https://preview.babylonjs.com/babylon.js"></script>
+        <script src="https://preview.babylonjs.com/inspector/babylon.inspector.bundle.js"></script>
+        <script src="https://preview.babylonjs.com/materialsLibrary/babylonjs.materials.min.js"></script>
+        <script src="https://preview.babylonjs.com/proceduralTexturesLibrary/babylonjs.proceduralTextures.min.js"></script>
+        <script src="https://preview.babylonjs.com/postProcessesLibrary/babylonjs.postProcess.min.js"></script>
+        <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.js"></script>
+        <script src="https://preview.babylonjs.com/serializers/babylonjs.serializers.min.js"></script>
+        <script src="https://preview.babylonjs.com/gui/babylon.gui.min.js"></script>
+
+        <style>
+            html, body {
+                overflow: hidden;
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            #renderCanvas {
+                width: 100%;
+                height: 100%;
+                touch-action: none;
+            }
+        </style>
+    </head>
+<body>
+    <canvas id="renderCanvas"></canvas>
+    <script>
+        var canvas = document.getElementById("renderCanvas");
+
+        var engine = null;
+        var scene = null;
+        var sceneToRender = null;
+        var createDefaultEngine = function() { return new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true }); };
+        // You have to create a function called createScene. This function must return a BABYLON.Scene object
+        // You can reference the following variables: scene, canvas
+        // You must at least define a camera
+        // More info here: https://doc.babylonjs.com/generals/The_Playground_Tutorial
+        
+        var createScene = function() {
+            BABYLON.Effect.ShadersStore["customVertexShader"] = "\r\n" +
+                "precision highp float;\r\n" +
+        
+                "// Attributes\r\n" +
+                "attribute vec3 position;\r\n" +
+                "attribute vec2 uv;\r\n" +
+        
+                "// Uniforms\r\n" +
+                "uniform mat4 worldViewProjection;\r\n" +
+        
+                "// Varying\r\n" +
+                "varying vec2 vUV;\r\n" +
+        
+                "void main(void) {\r\n" +
+                "    gl_Position = worldViewProjection * vec4(position, 1.0);\r\n" +
+        
+                "    vUV = uv;\r\n" +
+                "}\r\n";
+        
+            BABYLON.Effect.ShadersStore["customFragmentShader"] = "\r\n" +
+                "precision highp float;\r\n" +
+        
+                "varying vec2 vUV;\r\n" +
+        
+                "uniform sampler2D textureSampler;\r\n" +
+        
+                "void main(void) {\r\n" +
+                "    gl_FragColor = texture2D(textureSampler, vUV);\r\n" +
+                "}\r\n";
+        
+            var myVideo;            // Our Webcam stream (a DOM <video>)
+            var isAssigned = false; // Is the Webcam stream assigned to material?
+        
+            var scene = new BABYLON.Scene(engine);
+        
+            var camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 0, 0), scene);
+            camera.setTarget(new BABYLON.Vector3(0, 0, 1));
+            camera.attachControl(canvas, true);
+            var plane1 = BABYLON.MeshBuilder.CreatePlane("plane1", {width: 5, height: 7}, scene);
+            plane1.rotation.z = Math.PI;
+            plane1.position.z = 10;
+            plane1.position.y = 0;
+        
+            var shaderMaterial = new BABYLON.ShaderMaterial("shader", scene,
+                {
+                    vertex: "custom",
+                    fragment: "custom",
+                },
+                {
+                    attributes: ["position", "normal", "uv"],
+                    uniforms: ["world", "worldView", "worldViewProjection", "view", "projection"]
+                });
+            shaderMaterial.backFaceCulling = false;
+        
+            // Create our video texture
+            BABYLON.VideoTexture.CreateFromWebCam(scene, function (videoTexture) {
+              console.log(videoTexture);
+                myVideo = videoTexture;
+
+                shaderMaterial.setTexture("textureSampler", myVideo);
+            }, { maxWidth: 256, maxHeight: 256 });
+        
+            // When there is a video stream (!=undefined),
+            // check if it's ready          (readyState == 4),
+            // before applying shaderMaterial to avoid the Chrome console warning.
+            // [.Offscreen-For-WebGL-0xa957edd000]RENDER WARNING: there is no texture bound to the unit 0
+            scene.onBeforeRenderObservable.add(function () {
+                if (myVideo !== undefined && isAssigned == false) {
+                    if (myVideo.video.readyState == 4) {
+                        plane1.material = shaderMaterial;
+                        isAssigned = true;
+                    }
+                }
+            });
+            
+        
+            return scene;
+        };
+    var engine;
+    try {
+    engine = createDefaultEngine();
+    } catch(e) {
+    console.log("the available createEngine function failed. Creating the default engine instead");
+    engine = createDefaultEngine();
+    }
+        if (!engine) throw 'engine should not be null.';
+        scene = createScene();;
+        sceneToRender = scene
+
+        engine.runRenderLoop(function () {
+            if (sceneToRender) {
+                sceneToRender.render();
+            }
+        });
+
+        // Resize
+        window.addEventListener("resize", function () {
+            engine.resize();
+        });
+    </script>
+</body>
+</html>

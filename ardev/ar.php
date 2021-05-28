@@ -308,7 +308,7 @@
 	<div class="offers">
 		<div class="container">
 			<div class="items">
-				<a href="javascript:setTimeout(()=>{window.location = 'intent://ninanobiz.com/akkim/ardev/babylon/index.php?ver=<?=$_GET['ver']?>#Intent;scheme=https;package=com.android.chrome;end' },770);"
+				<a href="javascript:setTimeout(()=>{window.location = 'intent://zoo.arpark.info/ardev/babylon/index.php?ver=<?=$_GET['ver']?>#Intent;scheme=https;package=com.android.chrome;end' },770);"
 					class="entry clickSound">
 					<div class="playAR"></div>
 					<h5>AR Park</h5>

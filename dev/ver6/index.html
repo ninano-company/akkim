@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+        <title>Babylon.js sample code</title>
+
+        <!-- Babylon.js -->
+        <script src="https://code.jquery.com/pep/0.4.2/pep.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.6.2/dat.gui.min.js"></script>
+        <script src="https://preview.babylonjs.com/ammo.js"></script>
+        <script src="https://preview.babylonjs.com/cannon.js"></script>
+        <script src="https://preview.babylonjs.com/Oimo.js"></script>
+        <script src="https://preview.babylonjs.com/libktx.js"></script>
+        <script src="https://preview.babylonjs.com/earcut.min.js"></script>
+        <script src="https://preview.babylonjs.com/babylon.js"></script>
+        <script src="https://preview.babylonjs.com/inspector/babylon.inspector.bundle.js"></script>
+        <script src="https://preview.babylonjs.com/materialsLibrary/babylonjs.materials.min.js"></script>
+        <script src="https://preview.babylonjs.com/proceduralTexturesLibrary/babylonjs.proceduralTextures.min.js"></script>
+        <script src="https://preview.babylonjs.com/postProcessesLibrary/babylonjs.postProcess.min.js"></script>
+        <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.js"></script>
+        <script src="https://preview.babylonjs.com/serializers/babylonjs.serializers.min.js"></script>
+        <script src="https://preview.babylonjs.com/gui/babylon.gui.min.js"></script>
+
+        <style>
+            html, body {
+                overflow: hidden;
+                width: 100%;
+                height: 100%; 
+                margin: 0;
+                padding: 0;
+            }
+
+            #renderCanvas {
+                width: 100%;
+                height: 100%;
+                touch-action: none;
+            }
+        </style>
+    </head>
+<body>
+  <canvas id="renderCanvas"></canvas>
+  <script>
+    var canvas = document.getElementById("renderCanvas");
+
+    var engine = null;
+    var scene = null;
+    var sceneToRender = null;
+    var Chk = false;
+    var arChk = false;
+    var loadedMesh = null;
+    var loadedModel = null;
+    var loadedSkin = null;
+    var startingPoint;
+    var currentMesh;
+    var pointedNum = 0;
+    var singleFinger = false;
+    var dubbleFinger = false;
+    var startingScale = null;
+    var startingRotation = null;
+    var tap1 = null;
+    var tap2 = null;
+    var doubleTapChk = false;
+    var doubleTap = false;
+    var createDefaultEngine = function() { return new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true }); };
+    /**
+     * WebXR ar demo using hit-test, anchors, and plane detection.
+     * 
+     * Every press on the screen will add a figure in the requested position (if the ring is displayed). Those meshes will be kept in place by the AR system you are using.
+     * 
+     * Working (at the moment) on android devices and the latest chrome.
+     * 
+     * Created by Raanan Weber (@RaananW)
+    **/
+    
+    var createScene = async function () {
+
+      var myVideo;            // Our Webcam stream (a DOM <video>)
+      var isAssigned = false; // Is the Webcam stream assigned to material?
+      // This creates a basic Babylon Scene object (non-mesh)
+      var scene = new BABYLON.Scene(engine);
+  
+      // This creates and positions a free camera (non-mesh)
+      var camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 0, 0), scene);
+      camera.setTarget(new BABYLON.Vector3(0, 0, 1));
+      camera.attachControl(canvas, true);
+      var plane1 = BABYLON.MeshBuilder.CreatePlane("plane1", {width: 5, height: 7}, scene);
+      plane1.rotation.z = Math.PI;
+      plane1.position.z = 10;
+      plane1.position.y = 0;
+      plane1.isVisible = true;
+      
+      var shaderMaterial = new BABYLON.ShaderMaterial("shader", scene,
+          {
+              vertex: "custom",
+              fragment: "custom",
+          },
+          {
+              attributes: ["position", "normal", "uv"],
+              uniforms: ["world", "worldView", "worldViewProjection", "view", "projection"]
+          });
+      shaderMaterial.backFaceCulling = false;
+      // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
+      var light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
+      light.position = new BABYLON.Vector3(0, 5, 0);
+  
+      // Default intensity is 1. Let's dim the light a small amount
+      light.intensity = 0.7;
+      
+      var dirLight = new BABYLON.DirectionalLight('dirLight', new BABYLON.Vector3(-0.1, -1, -0.1), scene);
+      dirLight.position = new BABYLON.Vector3(0, 5, 0);
+      dirLight.intensity = 2.5;
+
+      BABYLON.VideoTexture.CreateFromWebCam(scene, function (videoTexture) {
+        console.log(videoTexture);
+          myVideo = videoTexture;
+
+          shaderMaterial.setTexture("textureSampler", myVideo);
+      }, { maxWidth: 256, maxHeight: 256 });
+
+      scene.onBeforeRenderObservable.add(function () {
+          if (myVideo !== undefined && isAssigned == false) {
+              if (myVideo.video.readyState == 4) {
+                  plane1.material = shaderMaterial;
+                  isAssigned = true;
+              }
+          }
+      });
+
+      var xr = await scene.createDefaultXRExperienceAsync({
+        uiOptions: {
+          sessionMode: "immersive-ar",
+          referenceSpaceType: "local-floor"
+        },
+        optionalFeatures: true
+      });
+      
+      const fm = xr.baseExperience.featuresManager;
+      const xrTest = fm.enableFeature(BABYLON.WebXRHitTest.Name, "latest");
+      const xrPlanes = fm.enableFeature(BABYLON.WebXRPlaneDetector.Name, "latest");
+      var video = document.createAttribute('video');
+
+      function capture() {
+        navigator.mediaDevices.getUserMedia = navigator.mediaDevices.getUserMedia || navigator.mediaDevices.webkitGetUserMedia || navigator.mediaDevices.mozGetUserMedia;
+        console.log(navigator.mediaDevices.enumerateDevices());
+
+        constraints = { audio: false, video: { facingMode: { exact : "environment" }, width: 1280, height: 720} };
+        if ( navigator.mediaDevices.getUserMedia ) {
+          console.log('hello');
+          navigator.mediaDevices.getUserMedia( constraints,
+            function( stream ){
+              console.log('beforePlaying');
+              video.srcObject = stream;
+              console.log(stream);
+              video.onloadedmetadata = function(e) {
+                video.play();
+                console.log('playing');
+              };
+            }, function(err) {
+              console.log('error' + err);
+          })
+          console.log("usermedia success");
+        }
+      }
+
+      scene.onPointerObservable.add( (pointerInfo) => {
+        switch (pointerInfo.type) {
+          case BABYLON.PointerEventTypes.POINTERDOWN:
+            // xr.baseExperience.sessionManager.session.visibilityState = "invisible";
+            // console.log(xr.baseExperience.sessionManager.session;
+            // console.log(pointerInfo.pickInfo.pickedMesh.id);
+            // if( pointerInfo.pickInfo.pickedMesh.id == "plane1" ) {
+              capture();
+              console.log('55');
+              // console.log('capture');
+              // BABYLON.Tools.CreateScreenshotUsingRenderTarget(engine, camera, {precision: 1});
+            // }
+            break;
+        }
+      });
+  
+      // const xrBackgroundRemover = fm.enableFeature(BABYLON.WebXRBackgroundRemover.Name);
+  
+      return scene;
+    
+    };
+    var engine;
+    try {
+    engine = createDefaultEngine();
+    } catch(e) {
+    console.log("the available createEngine function failed. Creating the default engine instead");
+    engine = createDefaultEngine();
+    }
+    if (!engine) throw 'engine should not be null.';
+    scene = createScene();;
+    scene.then(returnedScene => { sceneToRender = returnedScene; });
+    
+    engine.runRenderLoop(function () {
+      if (sceneToRender) {
+          sceneToRender.render();
+      }
+    });
+
+    // Resize
+    window.addEventListener("resize", function () {
+      engine.resize();
+    });
+  </script>
+</body>
+</html>

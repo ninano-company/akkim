@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+        <title>Babylon.js sample code</title>
+
+        <!-- Babylon.js -->
+        <script src="https://code.jquery.com/pep/0.4.3/pep.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.6.2/dat.gui.min.js"></script>
+        <script src="https://preview.babylonjs.com/ammo.js"></script>
+        <script src="https://preview.babylonjs.com/cannon.js"></script>
+        <script src="https://preview.babylonjs.com/Oimo.js"></script>
+        <script src="https://preview.babylonjs.com/libktx.js"></script>
+        <script src="https://preview.babylonjs.com/earcut.min.js"></script>
+        <script src="https://preview.babylonjs.com/babylon.js"></script>
+        <script src="https://preview.babylonjs.com/inspector/babylon.inspector.bundle.js"></script>
+        <script src="https://preview.babylonjs.com/materialsLibrary/babylonjs.materials.min.js"></script>
+        <script src="https://preview.babylonjs.com/proceduralTexturesLibrary/babylonjs.proceduralTextures.min.js"></script>
+        <script src="https://preview.babylonjs.com/postProcessesLibrary/babylonjs.postProcess.min.js"></script>
+        <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.js"></script>
+        <script src="https://preview.babylonjs.com/serializers/babylonjs.serializers.min.js"></script>
+        <script src="https://preview.babylonjs.com/gui/babylon.gui.min.js"></script>
+
+        <style>
+            html, body {
+                overflow: hidden;
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            #renderCanvas {
+                width: 100%;
+                height: 100%;
+                touch-action: none;
+            }
+        </style>
+    </head>
+<body>
+  <canvas id="renderCanvas" touch-action="none">
+    <p style="position: absoulte; top: 0; left: 0; z-index:99999999; background-color: #fff; color: #000;">Hello World</p>
+  </canvas>
+  <script>
+    var canvas = document.getElementById("renderCanvas");
+
+    var engine = null;
+    var scene = null;
+    var sceneToRender = null;
+    var createDefaultEngine = function() { return new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true }); };
+    var createScene = async function () {
+    
+      var scene = new BABYLON.Scene(engine);
+      var camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 5, -10), scene);
+      camera.setTarget(BABYLON.Vector3.Zero());
+      camera.attachControl(canvas, true);
+      var light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
+      light.intensity = 0.7;
+      var model = null;
+
+      BABYLON.SceneLoader.ImportMesh("", "../../assets/scenes/humpbackwhale.glb", "", scene, function (meshes) { 
+        var axis = new BABYLON.Vector3(0, 1, 0);
+        axis.normalize();
+        var theta = Math.PI/2;
+        var quaternion = new BABYLON.Quaternion.RotationAxis(axis, theta);
+        
+        for( i = 0; i < meshes.length; i++ ) {
+          meshes[i].position.y = 0;
+          meshes[i].position.z = 7;
+          meshes[i].scaling.scaleInPlace(0.5);
+          meshes[i].rotationQuaternion = quaternion;
+        }
+        model = meshes;
+      }, '', function(e, es, est) {
+        console.log(est);
+      });
+
+      var gizmoManager = new BABYLON.GizmoManager(scene)
+        gizmoManager.boundingBoxGizmoEnabled = false;
+        // Restrict gizmos to only spheres
+        gizmoManager.attachableMeshes = model;
+        // Toggle gizmos with keyboard buttons
+
+      // GUI
+      var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+
+      var button1 = BABYLON.GUI.Button.CreateSimpleButton("but", "");
+      button1.width = "100px";
+      button1.height = "100px";
+      button1.color = "gray";
+      button1.cornerRadius = 50;
+      button1.verticalAlignment = 1;
+      button1.background = "#fff";
+      button1.thickness = 3;
+      button1.zIndex = 10000;
+      button1.onPointerClickObservable.add(function() {
+        gizmoManager.boundingBoxGizmoEnabled = !gizmoManager.boundingBoxGizmoEnabled
+      })
+
+      advancedTexture.addControl(button1); 
+
+      const xr = await scene.createDefaultXRExperienceAsync({
+        disabledefaultui: false,
+        uiOptions: {
+          sessionMode: 'immersive-ar',
+          referenceSpaceType: "local-floor"
+        },
+        optionalFeatures: true
+      });
+
+      // const fm = xr.baseExperience.featuresManager;
+        
+      //   const xrTest = fm.enableFeature(BABYLON.WebXRHitTest.Name, "latest");
+      //   const xrPlanes = fm.enableFeature(BABYLON.WebXRPlaneDetector.Name, "latest");
+      //   const anchors = fm.enableFeature(BABYLON.WebXRAnchorSystem.Name, 'latest');
+
+      //   const xrBackgroundRemover = fm.enableFeature(BABYLON.WebXRBackgroundRemover.Name);
+  
+      return scene;
+
+    };
+    var engine;
+    try {
+    engine = createDefaultEngine();
+    } catch(e) {
+    console.log("the available createEngine function failed. Creating the default engine instead");
+    engine = createDefaultEngine();
+    }
+    if (!engine) throw 'engine should not be null.';
+    scene = createScene();;
+    scene.then(returnedScene => { sceneToRender = returnedScene; });
+      
+
+    engine.runRenderLoop(function () {
+      if (sceneToRender) {
+          sceneToRender.render();
+      }
+    });
+
+    // Resize
+    window.addEventListener("resize", function () {
+      engine.resize();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>getUserMedia</title>
+  <script
+  src="https://code.jquery.com/jquery-3.5.1.js"
+  integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+  crossorigin="anonymous"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    body, html {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* video {
+      width: 100%;
+      height: 50%;
+    } */
+
+    /* canvas {
+      width: 100%;
+      height: 50%;
+    } */
+  </style>
+</head>
+<body>
+  <!-- <video></video> -->
+  <button type="button" id="start" disabled onclick="startStream();">start</button>
+  <button type="button" id="pause" disabled onclick="pauseStream();">pause</button>
+  <button type="button" id="shot" onclick="capture();">capture</button>
+  <!-- <canvas></canvas> -->
+  <script>
+    var video = document.createElement('video');
+    var canvass = document.createElement('canvas');
+    var ctx = canvass.getContext('2d');
+    var link = document.createElement('a');
+    var date = new Date().getTime();
+    
+    var constraints = { audio: false, video: { height: 720, width: 1280, facingMode: "environment" } };
+    var w, h, ratio;
+    
+    var btnStart = document.querySelector('#start');
+    var btnPause = document.querySelector('#pause');
+    var btnShot = document.querySelector('#shot');
+    
+    function startStream() {
+      video.play();
+    }
+    
+    function pauseStream() {
+      video.pause();
+    }
+
+    function capture() {
+      video.play();
+      console.log(video);
+      ctx.fillRect(0, 0, w, h);
+      ctx.drawImage(video, 0, 0, w, h);
+      date = new Date().getTime();
+      link.download = 'captured' + date + '.PNG';
+      link.href = canvass.toDataURL();
+      video.pause();
+      // console.log(date);
+      link.click();
+      // numbering++;
+      // console.log(link.href);
+    }
+    
+    navigator.mediaDevices.getUserMedia(constraints)
+    .then(function(mediaStream) {
+      video.srcObject = mediaStream;
+      video.onloadedmetadata = function(e) {
+        video.width = video.videoWidth;
+        video.height = video.videoHeight;
+        
+        ratio = video.videoWidth / video.videoHeight;
+        w = video.videoWidth;
+        h = parseInt(w / ratio, 10);
+        canvass.width = w;
+        canvass.height = h;
+      }
+    })
+    .catch(function(err) {
+      console.log(err);
+    })
+
+  </script>
+</body>
+</html>

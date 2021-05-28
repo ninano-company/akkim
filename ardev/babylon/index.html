@@ -1,74 +1,105 @@
 <!DOCTYPE html>
 <html lang="ko">
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui"
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <title>AR</title>
-    <link rel="stylesheet" href="css/main.css?Ver=22">
-    <script type="text/javascript" src="../assets/js/jquery-3.4.1.min.js"></script>
+    <link rel="stylesheet" href="css/main.css?Ver=22" />
+    <script
+      type="text/javascript"
+      src="../assets/js/jquery-3.4.1.min.js"
+    ></script>
     <script type="text/javascript" src="../assets/js/jquery-ui.min.js"></script>
     <script type="text/javascript" src="../assets/js/my-app.js?ver=25"></script>
-</head>
+  </head>
 
-<body>
+  <body>
     <div class="btnsound">
-		<audio src="../assets/sounds/effects/cleanSound.wav" class="btn1sound"></audio>
-		<audio src="../assets/sounds/effects/ryangSound.wav" class="btn2sound"></audio>
-		<audio src="../assets/sounds/effects/tiktokSound.wav" class="btn3sound"></audio>
-	</div>
+      <audio
+        src="../assets/sounds/effects/cleanSound.wav"
+        class="btn1sound"
+      ></audio>
+      <audio
+        src="../assets/sounds/effects/ryangSound.wav"
+        class="btn2sound"
+      ></audio>
+      <audio
+        src="../assets/sounds/effects/tiktokSound.wav"
+        class="btn3sound"
+      ></audio>
+    </div>
     <header>
-        
-        <a href="javascript:setTimeout(()=>{window.location = '../index.html' },770);" class="goHome backbutton"></a>
-        <a href="javascript:setTimeout(()=>{window.history.back(); },770);" class="goBack backbutton"></a>
-        <h1>AR Park</h1>
+      <a
+        href="javascript:setTimeout(()=>{window.location = '../index.html' },770);"
+        class="goHome backbutton"
+      ></a>
+      <a
+        href="javascript:setTimeout(()=>{window.history.back(); },770);"
+        class="goBack backbutton"
+      ></a>
+      <h1>AR Park</h1>
     </header>
     <main>
-        <section>
-            <h2 class="hidden">동물AR</h2>
-            <div class="sectionImg">
-                <a class="clickSound" href="javascript:setTimeout(()=>{window.location = 'intent://ninanobiz.com/babylon/dev/zoo/index.html#Intent;scheme=https;package=com.android.chrome;end' },770);"><img src="css/images/zooBanner.png" alt="/"></a>
-            </div>
-            <p class="sec_title">동물</p>
-            <span class="desc">동물AR</span>
-        </section>
-        <section>
-            <h2 class="hidden">바다AR</h2>
-            <div class="sectionImg">
-                <a class="clickSound" href="javascript:setTimeout(()=>{window.location = 'intent://ninanobiz.com/babylon/dev/aqua/index.html#Intent;scheme=https;package=com.android.chrome;end' },770);"><img src="css/images/aquaBanner.png" alt="/"></a>
-            </div>
-            <p class="sec_title">바다</p>
-            <span class="desc">바다AR</span>
-        </section>
-        <section>
-            <h2 class="hidden">열대어AR</h2>
-            <div class="sectionImg">
-                <a class="clickSound" href="javascript:setTimeout(()=>{window.location = 'intent://ninanobiz.com/babylon/dev/tropical/index.html#Intent;scheme=https;package=com.android.chrome;end' },770);"><img src="css/images/tropicalBanner.jpg" alt="/"></a>
-            </div>
-            <p class="sec_title">열대어</p>
-            <span class="desc">열대어AR</span>
-        </section>
-        <section>
-            <h2 class="hidden">공룡AR</h2>
-            <div class="sectionImg">
-                <a class="clickSound" href="javascript:setTimeout(()=>{window.location = 'intent://ninanobiz.com/babylon/dev/jurassic/index.html#Intent;scheme=https;package=com.android.chrome;end;' },770);"><img src="css/images/dinosBanner.png" alt="/"></a>
-            </div>
-            <p class="sec_title">공룡</p>
-            <span class="desc">공룡AR</span>
-        </section>
-        
+      <section>
+        <h2 class="hidden">동물AR</h2>
+        <div class="sectionImg">
+          <a
+            class="clickSound"
+            href="javascript:setTimeout(()=>{window.location = 'intent://zoo.arpark.info/dev/zoo/index.html#Intent;scheme=https;package=com.android.chrome;end' },770);"
+            ><img src="css/images/zooBanner.png" alt="/"
+          /></a>
+        </div>
+        <p class="sec_title">동물</p>
+        <span class="desc">동물AR</span>
+      </section>
+      <section>
+        <h2 class="hidden">바다AR</h2>
+        <div class="sectionImg">
+          <a
+            class="clickSound"
+            href="javascript:setTimeout(()=>{window.location = 'intent://zoo.arpark.info/dev/aqua/index.html#Intent;scheme=https;package=com.android.chrome;end' },770);"
+            ><img src="css/images/aquaBanner.png" alt="/"
+          /></a>
+        </div>
+        <p class="sec_title">바다</p>
+        <span class="desc">바다AR</span>
+      </section>
+      <section>
+        <h2 class="hidden">열대어AR</h2>
+        <div class="sectionImg">
+          <a
+            class="clickSound"
+            href="javascript:setTimeout(()=>{window.location = 'intent://zoo.arpark.info/dev/tropical/index.html#Intent;scheme=https;package=com.android.chrome;end' },770);"
+            ><img src="css/images/tropicalBanner.jpg" alt="/"
+          /></a>
+        </div>
+        <p class="sec_title">열대어</p>
+        <span class="desc">열대어AR</span>
+      </section>
+      <section>
+        <h2 class="hidden">공룡AR</h2>
+        <div class="sectionImg">
+          <a
+            class="clickSound"
+            href="javascript:setTimeout(()=>{window.location = 'intent://zoo.arpark.info/dev/jurassic/index.html#Intent;scheme=https;package=com.android.chrome;end;' },770);"
+            ><img src="css/images/dinosBanner.png" alt="/"
+          /></a>
+        </div>
+        <p class="sec_title">공룡</p>
+        <span class="desc">공룡AR</span>
+      </section>
     </main>
 
     <script>
-        function NoRight() {
-            return false;
-        }
-        document.oncontextmenu = NoRight;
+      function NoRight() {
+        return false;
+      }
+      document.oncontextmenu = NoRight;
     </script>
-    
-</body>
-
+  </body>
 </html>

@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+        <title>Babylon.js sample code</title>
+
+        <!-- Babylon.js -->
+        <script src="https://code.jquery.com/pep/0.4.2/pep.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.6.2/dat.gui.min.js"></script>
+        <script src="https://preview.babylonjs.com/ammo.js"></script>
+        <script src="https://preview.babylonjs.com/cannon.js"></script>
+        <script src="https://preview.babylonjs.com/Oimo.js"></script>
+        <script src="https://preview.babylonjs.com/libktx.js"></script>
+        <script src="https://preview.babylonjs.com/earcut.min.js"></script>
+        <script src="https://preview.babylonjs.com/babylon.js"></script>
+        <script src="https://preview.babylonjs.com/loaders/babylon.glTF2FileLoader.js"></script>
+        <script src="https://preview.babylonjs.com/inspector/babylon.inspector.bundle.js"></script>
+        <script src="https://preview.babylonjs.com/materialsLibrary/babylonjs.materials.min.js"></script>
+        <script src="https://preview.babylonjs.com/proceduralTexturesLibrary/babylonjs.proceduralTextures.min.js"></script>
+        <script src="https://preview.babylonjs.com/postProcessesLibrary/babylonjs.postProcess.min.js"></script>
+        <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.js"></script>
+        <script src="https://preview.babylonjs.com/serializers/babylonjs.serializers.min.js"></script>
+        <script src="https://preview.babylonjs.com/gui/babylon.gui.min.js"></script>
+
+        <style>
+            html, body {
+                overflow: hidden;
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            #renderCanvas {
+                width: 100%;
+                height: 100%;
+                touch-action: none;
+            }
+        </style>
+    </head>
+<body>
+  <canvas id="renderCanvas" touch-action="none"></canvas>
+  <script>
+    var canvas = document.getElementById("renderCanvas");
+
+    var engine = null;
+    var scene = null;
+    var sceneToRender = null;
+    var pickedModel = null;
+    var createDefaultEngine = function() { 
+		return new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true }); 
+	};
+
+    var createScene = async function () {
+    
+	  // scene
+    var scene = new BABYLON.Scene(engine);
+
+	  // camera
+	var camera = new BABYLON.DeviceOrientationCamera("DevOr_camera", new BABYLON.Vector3(0, 1.6, 0), scene);
+    
+	camera.setTarget(new BABYLON.Vector3(0, 0, 5));
+
+	camera.attachControl(canvas, true);
+
+	scene.animationsEnabled = true;
+
+	// light
+    var light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
+    light.intensity = 2;
+    var axis = new BABYLON.Vector3(0, 1, 0);
+    axis.normalize();
+    var theta = Math.PI/2;
+    var quaternion = new BABYLON.Quaternion.RotationAxis(axis, theta);
+
+    var groundMaterial = new BABYLON.StandardMaterial("ground", scene);
+    groundMaterial.specularColor = BABYLON.Color3.Black();
+    groundMaterial.alpha = 0;
+    var ground = BABYLON.MeshBuilder.CreateGround("ground", {width:100, height:100}, scene, false);
+    ground.material = groundMaterial;
+
+	  // load mesh
+    BABYLON.SceneLoader.ImportMesh("", "../../assets/scenes/humpbackwhale.glb", "", scene, function (meshes) { 
+      
+      meshes[0].position.y = 0;
+      meshes[0].position.z = 20;
+      var quaternion = new BABYLON.Quaternion();
+      meshes[0].rotationQuaternion = quaternion;
+      whale = meshes[0]; 
+      pickedModel = whale;
+    });
+
+	  // create xr
+    const xr = await scene.createDefaultXRExperienceAsync({
+      uiOptions: {
+        sessionMode: 'immersive-ar',
+        referenceSpaceType: "local-floor"
+      },
+      optionalFeatures: true
+    });
+
+    const fm = xr.baseExperience.featuresManager;
+    const enabledFeature = fm.getEnabledFeature ;
+    console.log(fm);
+    const xrTest = fm.enableFeature(BABYLON.WebXRHitTest.Name, "latest");
+    const xrPlanes = fm.enableFeature(BABYLON.WebXRPlaneDetector.Name, "latest");
+    // const anchors = fm.enableFeature(BABYLON.WebXRAnchorSystem.Name, 'latest');
+
+    // const xrBackgroundRemover = fm.enableFeature(BABYLON.WebXRBackgroundRemover.Name);
+
+    var startingPoint;
+    var currentMesh;
+    var pointedNum = 0;
+    var dubbleFinger = false;
+    var startingScale = null;
+    var startingRotation = null;
+    var tap1 = null;
+    var tap2 = null;
+    var doubleTapChk = false;
+    var doubleTap = false;
+
+    var pointerDown = function ( point ) {
+      currentMesh = pickedModel;
+      startingPoint = point;
+      startingPoint._y = 0;
+      pointedNum++;
+    }
+
+    var pointerUp = function () {
+      pointedNum = 0;
+      tap1 = null;
+      tap2 = null;
+      startingScale = null;
+      startingRotation = null;
+      doubleTap = false;
+      if (startingPoint) {
+        startingPoint = null;
+        currentMesh = null;
+        return;
+      }
+    }
+
+    var pointerMove = function ( point ) {
+      if (!startingPoint) {
+        return;
+      }
+      var current = point;
+      current._y = 0;
+
+      if (!current) {
+        return;
+      }
+
+      var diff = current.subtract(startingPoint);
+      currentMesh.position.addInPlace(diff);
+      startingPoint = current;
+    }
+
+    var scaleControl = function ( pointer1, pointer2 ) {
+      if( pointer1 != null && pointer2 != null ) {
+
+        var diff = pointer1.subtract(pointer2);
+        var current = diff._x*diff._x + diff._y*diff._y;
+        var scale = 0;
+        if ( startingScale == null ) {
+          startingScale = current;
+        } else {
+          scale =  current - startingScale + 1  ;
+          currentMesh.scaling.scaleInPlace(scale);
+          startingScale = current;
+        }
+      }
+    }
+
+    var rotationControl = function ( pointer1, pointer2 ) {
+      if ( !pointer1 ) {
+        return;
+      }
+      if ( !pointer2 ) {
+        return;
+      }
+      var currentRo = pointer1.add(pointer2);
+      if (!startingRotation) {
+        startingRotation = currentRo;
+      } else {
+        var diff = currentRo.subtract(startingRotation);
+        currentMesh.addRotation( 0, -diff._x -diff._z, 0);
+        startingRotation = currentRo;
+      }
+    }
+
+    scene.onPointerObservable.add( (pointerInfo) => {
+      switch (pointerInfo.type) {
+        case BABYLON.PointerEventTypes.POINTERDOWN:
+          if(pointerInfo.pickInfo.hit) {
+            // if( pointerInfo.pickInfo.pickedMesh.id == "humpback_whale_exp1_0" ) {
+            //   pickedModel = whale;
+            // }
+            console.log(pointerInfo);
+            pointerDown(pointerInfo.pickInfo.pickedPoint);
+            if(pointedNum == 2 ) {
+              console.log("dubblePointed");
+            }
+            if(doubleTapChk == true) {
+              doubleTap = true;
+              console.log("doubleTapped", pointedNum);
+            }
+            doubleTapChk = true;
+            setTimeout(function(){
+              doubleTapChk = false;
+            }, 300);
+          }
+          break;
+        case BABYLON.PointerEventTypes.POINTERUP:
+          pointerUp();
+          break;
+        case BABYLON.PointerEventTypes.POINTERMOVE:
+          if( pointedNum == 1 && doubleTap == false ) {
+            if ( pointerInfo.pickInfo.hit ) {
+              pointerMove( pointerInfo.pickInfo.pickedPoint );
+            }
+          } else if ( pointedNum == 2 ) {
+            if( dubbleFinger == false ) {
+              tap1 = pointerInfo.pickInfo.pickedPoint;
+              dubbleFinger = true;
+            } else {
+              tap2 = pointerInfo.pickInfo.pickedPoint;
+              dubbleFinger = false;
+            }
+            scaleControl( tap1, tap2 );
+            rotationControl( tap1, tap2 );
+          } else if ( pointedNum == 1 && doubleTap == true ) {
+            
+          }
+          break;
+      }
+    });
+  
+      return scene;
+    };
+
+    var engine;
+    try {
+		engine = createDefaultEngine();
+    } catch(e) {
+		console.log("the available createEngine function failed. Creating the default engine instead");
+		engine = createDefaultEngine();
+    }
+
+    if (!engine) throw 'engine should not be null.';
+
+    scene = createScene();;
+    scene.then(returnedScene => { sceneToRender = returnedScene; });
+
+    engine.runRenderLoop(function () {
+      if (sceneToRender) {
+          sceneToRender.render();
+      }
+    });
+
+    // Resize
+    window.addEventListener("resize", function () {
+      engine.resize();
+    });
+  </script>
+</body>
+</html>

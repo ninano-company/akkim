@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+        <title>Babylon.js sample code</title>
+
+        <!-- Babylon.js -->
+        <script src="https://code.jquery.com/pep/0.4.2/pep.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.6.2/dat.gui.min.js"></script>
+        <script src="https://preview.babylonjs.com/ammo.js"></script>
+        <script src="https://preview.babylonjs.com/cannon.js"></script>
+        <script src="https://preview.babylonjs.com/Oimo.js"></script>
+        <script src="https://preview.babylonjs.com/libktx.js"></script>
+        <script src="https://preview.babylonjs.com/earcut.min.js"></script>
+        <script src="https://preview.babylonjs.com/babylon.js"></script>
+        <script src="https://preview.babylonjs.com/babylon.glTF2FileLoader.js"></script>
+        <script src="https://preview.babylonjs.com/inspector/babylon.inspector.bundle.js"></script>
+        <script src="https://preview.babylonjs.com/materialsLibrary/babylonjs.materials.min.js"></script>
+        <script src="https://preview.babylonjs.com/proceduralTexturesLibrary/babylonjs.proceduralTextures.min.js"></script>
+        <script src="https://preview.babylonjs.com/postProcessesLibrary/babylonjs.postProcess.min.js"></script>
+        <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.js"></script>
+        <script src="https://preview.babylonjs.com/serializers/babylonjs.serializers.min.js"></script>
+        <script src="https://preview.babylonjs.com/gui/babylon.gui.min.js"></script>
+
+        <style>
+            html, body {
+                overflow: hidden;
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            #renderCanvas {
+                width: 100%;
+                height: 100%;
+                touch-action: none;
+            }
+        </style>
+    </head>
+<body>
+  <canvas id="renderCanvas" touch-action="none"></canvas>
+  <script>
+    var canvas = document.getElementById("renderCanvas");
+
+    var engine = null;
+    var scene = null;
+    var sceneToRender = null;
+    var pickedModel = null;
+    var createDefaultEngine = function() { 
+		return new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true }); 
+	};
+
+    var createScene = async function () {
+    
+	  // scene
+    var scene = new BABYLON.Scene(engine);
+
+	  // camera
+      // var camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 5, -10), scene);
+      // camera.setTarget(BABYLON.Vector3.Zero());
+	  camera = new BABYLON.ArcRotateCamera("camera1", 0, -5, 10, new BABYLON.Vector3(0, 0, 0), scene);
+    camera.attachControl(canvas, true);
+
+	  scene.animationsEnabled = true;
+
+	  // light
+    var light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
+    light.intensity = 2;
+
+    var groundMaterial = new BABYLON.StandardMaterial("ground", scene);
+    groundMaterial.specularColor = BABYLON.Color3.Black();
+    groundMaterial.alpha = 0.2;
+    var ground = BABYLON.MeshBuilder.CreateGround("ground", {width:10, height:10}, scene, false);
+    ground.material = groundMaterial;
+
+	  // load mesh
+    BABYLON.SceneLoader.ImportMesh("", "../../assets/scenes/leopard-walk-ip.glb", "", scene, function (meshes) { 
+    // BABYLON.SceneLoader.Load("../../assets/scenes/", "leopard-walk-ip.glb", engine, function (scene) { 
+      var axis = new BABYLON.Vector3(0, 1, 0);
+      axis.normalize();
+      var theta = Math.PI/2;
+      // var quaternion = new BABYLON.Quaternion.RotationAxis(axis, theta);
+      var quaternion = new BABYLON.Quaternion();
+      
+      // for( i = 0; i < meshes.length; i++ ) {
+        meshes[0].position.y = 0;
+        meshes[0].position.z = 1;
+        meshes[0].rotationQuaternion = quaternion;
+        pickedModel = meshes[0];
+        console.log(meshes[0]);
+      // }
+      });
+      // var greenMat = new BABYLON.StandardMaterial("ground", scene);
+      // greenMat.diffuseColor = new BABYLON.Color3(0.4, 0.4, 0.4);
+      // greenMat.specularColor = new BABYLON.Color3(0.4, 0.4, 0.4);
+      // greenMat.emissiveColor = BABYLON.Color3.Green();
+
+      // var greenBox = BABYLON.MeshBuilder.CreateBox("green", {size:1}, scene);
+      // greenBox.material = greenMat;
+      // greenBox.position.z -= 1;
+      // greenBox.position.y = 0;
+
+	  // create xr
+      const xr = await scene.createDefaultXRExperienceAsync({
+        disabledefaultui: true,
+        uiOptions: {
+          sessionMode: 'immersive-ar',
+          referenceSpaceType: "local-floor"
+        },
+        optionalFeatures: true
+      });
+
+      // const fm = xr.baseExperience.featuresManager;
+      // const xrTest = fm.enableFeature(BABYLON.WebXRHitTest.Name, "latest");
+      // const xrPlanes = fm.enableFeature(BABYLON.WebXRPlaneDetector.Name, "latest");
+      // // const anchors = fm.enableFeature(BABYLON.WebXRAnchorSystem.Name, 'latest');
+  
+      // const xrBackgroundRemover = fm.enableFeature(BABYLON.WebXRBackgroundRemover.Name);
+
+    var startingPoint;
+    var currentMesh;
+
+    // scene.onPointerObservable = (evt, pickInfo) => {
+    //   if(pickInfo.hit) {
+    //     console.log(pickInfo.Mesh);
+    //   }
+    // }
+
+    var getGroundPosition = function () {
+      var pickinfo = scene.pick(scene.pointerX, scene.pointerY, function (mesh) { return mesh == ground; });
+      console.log(pickinfo.pickedPoint);
+      if (pickinfo.hit) {
+        return pickinfo.pickedPoint;
+      }
+      return null;
+    }
+    var pointerDown = function (mesh) {
+      currentMesh = mesh;
+      startingPoint = getGroundPosition();
+      console.log(mesh.position);
+      if (startingPoint) { // we need to disconnect camera from canvas
+        setTimeout(function () {
+          camera.detachControl(canvas);
+        }, 0);
+        // alert(startingPoint);
+      }
+
+    }
+
+    var pointerUp = function () {
+      if (startingPoint) {
+        camera.attachControl(canvas, true);
+        startingPoint = null;
+        return;
+      }
+    }
+
+    var pointerMove = function () {
+      if (!startingPoint) {
+        return;
+      }
+      var current = getGroundPosition();
+
+      if (!current) {
+        return;
+      }
+
+      var diff = current.subtract(startingPoint);
+      currentMesh.position.addInPlace(diff);
+
+      startingPoint = current;
+    }
+
+    scene.onPointerDown = (evt, pickInfo) => {
+      if(pickInfo.hit && pickInfo.pickedMesh != ground) {
+        if( pickInfo.pickedMesh.id == "Leopard_M_LOD0_primitive0" || pickInfo.pickedMesh.id == "Leopard_M_LOD1_primitive0" || pickInfo.pickedMesh.id == "Leopard_M_LOD2_primitive0" || pickInfo.pickedMesh.id == "Leopard_M_LOD3_primitive0" || pickInfo.pickedMesh.id == "Leopard_M_LOD4_primitive0" ) {
+          pointerDown(pickedModel);
+        } else {
+          pointerDown(pickInfo.pickedMesh);
+        }
+      }
+    }
+    scene.onPointerUp = (evt, pickInfo) => {
+      pointerUp();
+      // console.log("Up");
+    }
+
+    scene.onPointerMove = (evt, pickInfo) => {
+      pointerMove();
+      // console.log("Move");
+    }
+      // scene.onPointerObservable.add((pointerInfo) => {
+      //   switch (pointerInfo.type) {
+      //     // case BABYLON.PointerEventTypes.POINTERDOWN:
+      //     //   console.log("POINTER DOWN");
+      //     //   break;
+      //     // case BABYLON.PointerEventTypes.POINTERUP:
+      //     //   console.log("POINTER UP");
+      //     //   break;
+      //     // case BABYLON.PointerEventTypes.POINTERMOVE:
+      //     //   console.log("POINTER MOVE");
+      //     //   break;
+      //     // case BABYLON.PointerEventTypes.POINTERPICK:
+      //     //   console.log("POINTER PICK");
+      //     //           console.log(pointerInfo);
+      //     //   break;
+      //     // case BABYLON.PointerEventTypes.POINTERTAP:
+      //     //   console.log("POINTER TAP");
+      //     //   break;
+      //     case BABYLON.PointerEventTypes.POINTERDOUBLETAP:
+      //       // console.log("POINTER DOUBLE-TAP");
+      //       alert();
+      //       break;
+      //   }
+      // });
+  
+      return scene;
+    };
+
+    var engine;
+    try {
+		engine = createDefaultEngine();
+    } catch(e) {
+		console.log("the available createEngine function failed. Creating the default engine instead");
+		engine = createDefaultEngine();
+    }
+
+    if (!engine) throw 'engine should not be null.';
+
+    scene = createScene();;
+    scene.then(returnedScene => { sceneToRender = returnedScene; });
+
+    engine.runRenderLoop(function () {
+      if (sceneToRender) {
+          sceneToRender.render();
+      }
+    });
+
+    // Resize
+    window.addEventListener("resize", function () {
+      engine.resize();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+        <title>Babylon.js sample code</title>
+
+        <!-- Babylon.js -->
+        <script src="https://code.jquery.com/pep/0.4.2/pep.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.6.2/dat.gui.min.js"></script>
+        <script src="https://preview.babylonjs.com/ammo.js"></script>
+        <script src="https://preview.babylonjs.com/cannon.js"></script>
+        <script src="https://preview.babylonjs.com/Oimo.js"></script>
+        <script src="https://preview.babylonjs.com/libktx.js"></script>
+        <script src="https://preview.babylonjs.com/earcut.min.js"></script>
+        <script src="https://preview.babylonjs.com/babylon.js"></script>
+        <script src="https://preview.babylonjs.com/loaders/babylon.glTF2FileLoader.js"></script>
+        <script src="https://preview.babylonjs.com/inspector/babylon.inspector.bundle.js"></script>
+        <script src="https://preview.babylonjs.com/materialsLibrary/babylonjs.materials.min.js"></script>
+        <script src="https://preview.babylonjs.com/proceduralTexturesLibrary/babylonjs.proceduralTextures.min.js"></script>
+        <script src="https://preview.babylonjs.com/postProcessesLibrary/babylonjs.postProcess.min.js"></script>
+        <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.js"></script>
+        <script src="https://preview.babylonjs.com/serializers/babylonjs.serializers.min.js"></script>
+        <script src="https://preview.babylonjs.com/gui/babylon.gui.min.js"></script>
+
+        <style>
+            html, body {
+                overflow: hidden;
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            #renderCanvas {
+                width: 100%;
+                height: 100%;
+                touch-action: none;
+            }
+        </style>
+    </head>
+<body>
+  <canvas id="renderCanvas" touch-action="none"></canvas>
+  <script>
+    var canvas = document.getElementById("renderCanvas");
+
+    var engine = null;
+    var scene = null;
+    var sceneToRender = null;
+    var pickedModel = null;
+    var createDefaultEngine = function() { 
+		return new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true }); 
+	};
+
+    var createScene = async function () {
+    
+	  // scene
+    var scene = new BABYLON.Scene(engine);
+
+	  // camera
+	  // var camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 5, -10), scene);
+	  // camera = new BABYLON.ArcRotateCamera("camera1", 0, -5, 10, new BABYLON.Vector3(0, 0, 0), scene);
+	var camera = new BABYLON.DeviceOrientationCamera("DevOr_camera", new BABYLON.Vector3(0, 0, 0), scene);
+    
+	camera.setTarget(new BABYLON.Vector3(0, 0, 5));
+
+	camera.attachControl(canvas, true);
+
+	scene.animationsEnabled = true;
+
+	// light
+    var light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
+    light.intensity = 2;
+
+    // var groundMaterial = new BABYLON.StandardMaterial("ground", scene);
+    // groundMaterial.specularColor = BABYLON.Color3.Black();
+    // groundMaterial.alpha = 0.2;
+    // var ground = BABYLON.MeshBuilder.CreateGround("ground", {width:10, height:10}, scene, false);
+    // ground.material = groundMaterial;
+
+	  // load mesh
+    BABYLON.SceneLoader.ImportMesh("", "../../assets/scenes/leopard-running.glb", "", scene, function (meshes) { 
+      var quaternion = new BABYLON.Quaternion();
+    
+      meshes[0].position.y = -0.5;
+      meshes[0].position.z = 5;
+      meshes[0].rotationQuaternion = quaternion;
+      pickedModel = meshes[0];
+    });
+
+    BABYLON.SceneLoader.ImportMesh("", "../../assets/scenes/leopard-sleeping-ip.glb", "", scene, function (meshes) { 
+      var quaternion = new BABYLON.Quaternion();
+    
+      meshes[0].position.x = 5;
+      meshes[0].position.y = -0.5;
+      meshes[0].position.z = 5;
+      meshes[0].rotationQuaternion = quaternion;
+      pickedModel = meshes[0];
+    });
+
+    BABYLON.SceneLoader.ImportMesh("", "../../assets/scenes/leopard-walk-run-ip.glb", "", scene, function (meshes) { 
+      var quaternion = new BABYLON.Quaternion();
+    
+      meshes[0].position.x = -5;
+      meshes[0].position.y = -0.5;
+      meshes[0].position.z = 5;
+      meshes[0].rotationQuaternion = quaternion;
+      pickedModel = meshes[0];
+    });
+
+	// show axes
+	var axisX = BABYLON.Mesh.CreateLines("axisX", [
+		new BABYLON.Vector3(0, 0, 5),
+		new BABYLON.Vector3(1, 0, 5)
+		], scene);
+	axisX.color = new BABYLON.Color3(1, 0, 0);
+
+	var axisY = BABYLON.Mesh.CreateLines("axisY", [
+		new BABYLON.Vector3(0, 0, 5),
+		new BABYLON.Vector3(0, 1, 5)
+		], scene);
+	axisY.color = new BABYLON.Color3(0, 1, 0);
+
+	var axisZ = BABYLON.Mesh.CreateLines("axisZ", [
+		new BABYLON.Vector3(0, 0, 5),
+		new BABYLON.Vector3(0, 0, 6)
+		], scene);
+	axisZ.color = new BABYLON.Color3(0, 0, 1);
+
+	  // create xr
+      const xr = await scene.createDefaultXRExperienceAsync({
+        disabledefaultui: true,
+        uiOptions: {
+          sessionMode: 'immersive-ar',
+          referenceSpaceType: "local-floor"
+        },
+        optionalFeatures: true
+      });
+
+      // const fm = xr.baseExperience.featuresManager;
+      // const xrTest = fm.enableFeature(BABYLON.WebXRHitTest.Name, "latest");
+      // const xrPlanes = fm.enableFeature(BABYLON.WebXRPlaneDetector.Name, "latest");
+      // // const anchors = fm.enableFeature(BABYLON.WebXRAnchorSystem.Name, 'latest');
+  
+      // const xrBackgroundRemover = fm.enableFeature(BABYLON.WebXRBackgroundRemover.Name);
+
+      return scene;
+    };
+
+    var engine;
+    try {
+		engine = createDefaultEngine();
+    } catch(e) {
+		console.log("the available createEngine function failed. Creating the default engine instead");
+		engine = createDefaultEngine();
+    }
+
+    if (!engine) throw 'engine should not be null.';
+
+    scene = createScene();;
+    scene.then(returnedScene => { sceneToRender = returnedScene; });
+
+    engine.runRenderLoop(function () {
+      if (sceneToRender) {
+          sceneToRender.render();
+      }
+    });
+
+    // Resize
+    window.addEventListener("resize", function () {
+      engine.resize();
+    });
+  </script>
+</body>
+</html>
