@@ -92,7 +92,7 @@ INSERT INTO akkARs( name, ARs, mode )
           <h2 class="hidden">호랑이</h2>
           <div class="sectionImg">
               <a
-                  href="intent://arvr.google.com/scene-viewer/1.0?file=https://ninanobiz.com/akkim/ardev/assets/models/Tiger_Y_Clip_01_L.glb&mode=ar_only&title=호랑이&sound=https://ninanobiz.com/akkim/ardev/assets/sounds/background/zoo.mp3#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;">
+                  href="intent://arvr.google.com/scene-viewer/1.0?file=https://ninanobiz.com/akkim/ardev/assets/models/Tiger_Y_Clip_01_L.glb&mode=3d_preferred&title=호랑이&sound=https://ninanobiz.com/akkim/ardev/assets/sounds/background/zoo.mp3#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;">
                   <img src="css/images/tigerY.jpg" alt="/">
               </a>
           </div>
@@ -103,7 +103,7 @@ INSERT INTO akkARs( name, ARs, mode )
           <h2 class="hidden">표범</h2>
           <div class="sectionImg">
               <a
-                  href="intent://arvr.google.com/scene-viewer/1.0?file=https://ninanobiz.com/akkim/ardev/assets/models/Leopard_M_Clip_01_L.glb&mode=ar_only&title=표범&sound=https://ninanobiz.com/akkim/ardev/assets/sounds/background/zoo.mp3#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;"><img
+                  href="intent://arvr.google.com/scene-viewer/1.0?file=https://ninanobiz.com/akkim/ardev/assets/models/Leopard_M_Clip_01_L.glb&mode=3d_preferred&title=표범&sound=https://ninanobiz.com/akkim/ardev/assets/sounds/background/zoo.mp3#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;"><img
                       src="css/images/AR_2.jpg" alt="/"></a>
           </div>
           <p class="sec_title">아빠 표범</p>
@@ -113,7 +113,7 @@ INSERT INTO akkARs( name, ARs, mode )
           <h2 class="hidden">사자</h2>
           <div class="sectionImg">
               <a
-                  href="intent://arvr.google.com/scene-viewer/1.0?file=https://ninanobiz.com/akkim/ardev/assets/models/Lion_M_03_L.glb&mode=ar_only&title=사자&sound=https://ninanobiz.com/akkim/ardev/assets/sounds/background/Safari-mix.mp3#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;"><img
+                  href="intent://arvr.google.com/scene-viewer/1.0?file=https://ninanobiz.com/akkim/ardev/assets/models/Lion_M_03_L.glb&mode=3d_preferred&title=사자&sound=https://ninanobiz.com/akkim/ardev/assets/sounds/background/Safari-mix.mp3#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;"><img
                       src="css/images/lionM.jpg" alt="/"></a>
           </div>
           <p class="sec_title">아빠 사자</p>
@@ -123,7 +123,7 @@ INSERT INTO akkARs( name, ARs, mode )
           <h2 class="hidden">사슴</h2>
           <div class="sectionImg">
               <a
-                  href="intent://arvr.google.com/scene-viewer/1.0?file=https://ninanobiz.com/akkim/ardev/assets/models/RedDeer_M_Clip_01_L.glb&mode=ar_only&title=사슴&sound=https://ninanobiz.com/akkim/ardev/assets/sounds/background/zoo.mp3#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;">
+                  href="intent://arvr.google.com/scene-viewer/1.0?file=https://ninanobiz.com/akkim/ardev/assets/models/RedDeer_M_Clip_01_L.glb&mode=3d_preferred&title=사슴&sound=https://ninanobiz.com/akkim/ardev/assets/sounds/background/zoo.mp3#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;">
                   <img src="css/images/deerM.jpg" alt="/">
               </a>
           </div>
@@ -134,7 +134,7 @@ INSERT INTO akkARs( name, ARs, mode )
           <h2 class="hidden">스테고사우르스</h2>
           <div class="sectionImg">
               <a
-                  href="intent://arvr.google.com/scene-viewer/1.0?file=https://ninanobiz.com/akkim/ardev/assets/models/Stegosaurus_L.glb&mode=ar_only&title=스테고사우르스&sound=https://ninanobiz.com/akkim/ardev/assets/sounds/background/dinos.mp3#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;">
+                  href="intent://arvr.google.com/scene-viewer/1.0?file=https://ninanobiz.com/akkim/ardev/assets/models/Stegosaurus_L.glb&mode=3d_preferred&title=스테고사우르스&sound=https://ninanobiz.com/akkim/ardev/assets/sounds/background/dinos.mp3#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;">
                   <img src="css/images/stegosaurus.jpg" alt="/">
               </a>
           </div>
@@ -145,7 +145,7 @@ INSERT INTO akkARs( name, ARs, mode )
           <h2 class="hidden">티라노사우르스</h2>
           <div class="sectionImg">
               <a
-                  href="intent://arvr.google.com/scene-viewer/1.0?file=https://ninanobiz.com/akkim/ardev/assets/models/Tyrannosaurus_L_R1.glb&mode=ar_only&title=티라노사우르스&sound=https://ninanobiz.com/akkim/ardev/assets/sounds/background/dinos.mp3#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;">
+                  href="intent://arvr.google.com/scene-viewer/1.0?file=https://ninanobiz.com/akkim/ardev/assets/models/Tyrannosaurus_L_R1.glb&mode=3d_preferred&title=티라노사우르스&sound=https://ninanobiz.com/akkim/ardev/assets/sounds/background/dinos.mp3#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;">
                   <img src="css/images/TyrannosaurusBanner.png" alt="/">
               </a>
           </div>
@@ -156,7 +156,7 @@ INSERT INTO akkARs( name, ARs, mode )
           <h2 class="hidden">돌고래</h2>
           <div class="sectionImg">
               <a
-                  href="intent://arvr.google.com/scene-viewer/1.0?file=https://ninanobiz.com/akkim/ardev/assets/models/Dolphin_L.glb&mode=ar_only&title=돌고래&sound=https://ninanobiz.com/akkim/ardev/assets/sounds/background/aqua.mp3#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;">
+                  href="intent://arvr.google.com/scene-viewer/1.0?file=https://ninanobiz.com/akkim/ardev/assets/models/Dolphin_L.glb&mode=3d_preferred&title=돌고래&sound=https://ninanobiz.com/akkim/ardev/assets/sounds/background/aqua.mp3#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;">
                   <img src="css/images/dolphin.jpg" alt="/">
               </a>
           </div>
@@ -167,7 +167,7 @@ INSERT INTO akkARs( name, ARs, mode )
           <h2 class="hidden">범고래</h2>
           <div class="sectionImg">
               <a
-                  href="intent://arvr.google.com/scene-viewer/1.0?file=https://ninanobiz.com/akkim/ardev/assets/models/Orca_L.glb&mode=ar_only&title=범고래&sound=https://ninanobiz.com/akkim/ardev/assets/sounds/background/aqua.mp3#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;">
+                  href="intent://arvr.google.com/scene-viewer/1.0?file=https://ninanobiz.com/akkim/ardev/assets/models/Orca_L.glb&mode=3d_preferred&title=범고래&sound=https://ninanobiz.com/akkim/ardev/assets/sounds/background/aqua.mp3#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;">
                   <img src="css/images/orca.jpg" alt="/">
               </a>
           </div>
@@ -178,7 +178,7 @@ INSERT INTO akkARs( name, ARs, mode )
           <h2 class="hidden">가오리</h2>
           <div class="sectionImg">
               <a
-                  href="intent://arvr.google.com/scene-viewer/1.0?file=https://ninanobiz.com/akkim/ardev/assets/models/Stingray_L.glb&mode=ar_only&title=가오리&sound=https://ninanobiz.com/akkim/ardev/assets/sounds/background/underwater.mp3#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;">
+                  href="intent://arvr.google.com/scene-viewer/1.0?file=https://ninanobiz.com/akkim/ardev/assets/models/Stingray_L.glb&mode=3d_preferred&title=가오리&sound=https://ninanobiz.com/akkim/ardev/assets/sounds/background/underwater.mp3#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;">
                   <img src="css/images/stingray.jpg" alt="/">
               </a>
           </div>
@@ -189,7 +189,7 @@ INSERT INTO akkARs( name, ARs, mode )
           <h2 class="hidden">니모</h2>
           <div class="sectionImg">
               <a
-                  href="intent://arvr.google.com/scene-viewer/1.0?file=https://ninanobiz.com/akkim/ardev/assets/models/Nemo.glb&mode=ar_only&title=니모&sound=https://ninanobiz.com/akkim/ardev/assets/sounds/background/aquaNemo.mp3#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;">
+                  href="intent://arvr.google.com/scene-viewer/1.0?file=https://ninanobiz.com/akkim/ardev/assets/models/Nemo.glb&mode=3d_preferred&title=니모&sound=https://ninanobiz.com/akkim/ardev/assets/sounds/background/aquaNemo.mp3#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;">
                   <img src="css/images/nemo.jpg" alt="/">
               </a>
           </div>
