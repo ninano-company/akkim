@@ -1,6 +1,6 @@
 <?php
 
-    $conn=mysqli_connect('localhost','copaki','whosKGB3@33','copaki');
+    $conn=mysqli_connect('ninanobiz.com','copaki','whosKGB3@33','copaki');
     $sql = "
     SELECT
       *
@@ -329,19 +329,6 @@
 		</div>
 	</div>
 	</div>
-	<!-- end offers -->
-	<!-- <div class="cutton">
-		<div class="introBox">
-			<p class="welcomeMessage">AR세상에 오신 것을 환영합니다.</p>
-			<p class="announce">[시작] 버튼을 누르시면 AR페이지를 실행합니다.</p>
-			<span>※배경음악을 듣고 싶지 않으시다면<br>&nbsp;&nbsp;[BGM 없이 실행]을 눌러주세요.</span>
-			</p>
-			<div class="introBtnBox">
-				<button class="NoBGM">BGM 없이 실행</button>
-				<button class="removeCutton">시작</button>
-			</div>
-		</div>
-	</div> -->
 	<footer>
 		<!-- footer -->
 		<span><small>Copyright &copy; 2020 All rights reserved</small></span>

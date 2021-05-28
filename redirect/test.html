@@ -1,10 +1,11 @@
-<script> 
+<script>
   var ua = navigator.userAgent;
-  const url = 'ninanobiz.com/akkim/ardev/index.php';
+  const url = "ar.arpark.info/ardev/index.php";
 
-  if ( ua.indexOf( 'KAKAOTALK' ) < 0 && ua.indexOf( 'NAVER' ) < 0 ) {
-    location.href='https://'+url;
+  if (ua.indexOf("KAKAOTALK") < 0 && ua.indexOf("NAVER") < 0) {
+    location.href = "https://" + url;
   } else {
-    location.href='intent://'+url+'#Intent;scheme=https;package=com.android.chrome;end';
+    location.href =
+      "intent://" + url + "#Intent;scheme=https;package=com.android.chrome;end";
   }
 </script>
